@@ -43,39 +43,39 @@ export const constantRoutes = [
     hidden: true
   },
 
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/dashboard',
-  //   children: [{
-  //     path: 'dashboard',
-  //     name: 'Dashboard',
-  //     component: () => import('@/views/dashboard/index'),
-  //     meta: { title: 'Dashboard', icon: 'dashboard' }
-  //   }]
-  // },
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [{
+      path: 'dashboard',
+      name: 'Dashboard',
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: 'Dashboard', icon: 'dashboard' }
+    }]
+  },
   //
-  // {
-  //   path: '/example',
-  //   component: Layout,
-  //   redirect: '/example/table',
-  //   name: 'Example',
-  //   meta: { title: 'Example', icon: 'el-icon-s-help' },
-  //   children: [
-  //     {
-  //       path: 'table',
-  //       name: 'Table',
-  //       component: () => import('@/views/table/index'),
-  //       meta: { title: 'Table', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'tree',
-  //       name: 'Tree',
-  //       component: () => import('@/views/tree/index'),
-  //       meta: { title: 'Tree', icon: 'tree' }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/example',
+    component: Layout,
+    redirect: '/example/table',
+    name: 'Example',
+    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'table',
+        name: 'Table',
+        component: () => import('@/views/table/index'),
+        meta: { title: 'Table', icon: 'table' }
+      },
+      {
+        path: 'tree',
+        name: 'Tree',
+        component: () => import('@/views/tree/index'),
+        meta: { title: 'Tree', icon: 'tree' }
+      }
+    ]
+  },
   //
   // {
   //   path: '/form',
@@ -184,19 +184,50 @@ export const constantRoutes = [
   },
 
   {
-    path: '/library',
+    path: '/database',
     component: Layout,
-    redirect: '/library/index', // 重定向地址，在面包屑中点击会重定向去的地址
+    redirect: '/database/library', // 重定向地址，在面包屑中点击会重定向去的地址
+    hidden: false, // 不在侧边栏显示
+    alwaysShow: false, // 一直显示根路由
+    meta: { title: 'Database', icon: 'el-icon-s-help', roles: ['admin', 'editor'] },
+    children: [{
+      path: 'library',
+      component: () => import('@/views/database/library/index'),
+      name: 'Library',
+      meta: {
+        title: 'Library',
+        icon: 'tree', // 图标
+        roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
+        noCache: true // 不会被 <keep-alive> 缓存
+      }
+    },
+    {
+      path: 'attribute',
+      component: () => import('@/views/database/attribute/index'),
+      name: 'Attribute',
+      meta: {
+        title: 'Attribute',
+        icon: 'table', // 图标
+        roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
+        noCache: true // 不会被 <keep-alive> 缓存
+      }
+    }]
+  },
+
+  {
+    path: '/model',
+    component: Layout,
+    redirect: '/model/index', // 重定向地址，在面包屑中点击会重定向去的地址
     hidden: false, // 不在侧边栏显示
     alwaysShow: false, // 一直显示根路由
     meta: { roles: ['admin', 'editor'] }, // 你可以在根路由设置权限，这样它下面所有的子路由都继承了这个权限
     children: [{
       path: 'index',
-      component: () => import('@/views/library/index'),
-      name: 'Library',
+      component: () => import('@/views/database/library/index'),
+      name: 'Model',
       meta: {
-        title: 'Library',
-        icon: 'tree', // 图标
+        title: 'Model',
+        icon: 'table', // 图标
         roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
         noCache: true // 不会被 <keep-alive> 缓存
       }

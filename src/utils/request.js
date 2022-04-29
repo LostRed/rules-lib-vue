@@ -91,14 +91,31 @@ api.interceptors.response.use(
   response => {
     const res = response.data
     if (res.code !== 0) {
+      let message = res.message || 'Error'
+      if (res.code === -2) {
+        const map = res.data
+        message = message + ': '
+        for (const key in map) {
+          message = message + key + map[key] + ', '
+        }
+        message = message.slice(0, -2)
+      }
       Message({
-        message: res.message || 'Error',
+        message: message,
         type: 'error',
         duration: 5 * 1000
       })
-    } else {
-      return res
     }
+    return res
+  },
+  error => {
+    console.log('err' + error) // for debug
+    Message({
+      message: error.message,
+      type: 'error',
+      duration: 5 * 1000
+    })
+    return Promise.reject(error)
   }
 )
 

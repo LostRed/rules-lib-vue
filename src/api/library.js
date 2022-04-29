@@ -31,3 +31,11 @@ export function queryByCatalog(probe) {
     data: probe
   })
 }
+
+export function existLibrary(probe) {
+  return api({
+    url: '/library/exists',
+    method: 'post',
+    data: probe
+  })
+}

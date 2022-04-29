@@ -9,12 +9,12 @@
                 <el-option
                   v-for="catalog in catalogs"
                   :key="catalog.id"
-                  :label="catalog.description"
+                  :label="catalog.catalogName"
                   :value="catalog.id"
                   @change="probe.catalogId = catalog.id"
                 >
-                  <span style="float: left">{{ catalog.description }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ catalog.catalogName }}</span>
+                  <span style="float: left">{{ catalog.catalogName }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ catalog.id }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -39,7 +39,7 @@
       <div style="margin-bottom: 17px">
         <el-table :data="list" size="small" border fit highlight-current-row>
           <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
-          <el-table-column prop="catalogName" label="目录名称" width="300"/>
+          <el-table-column prop="libraryCode" label="库编号" width="300"/>
           <el-table-column prop="libraryName" label="库名称" width="300"/>
           <el-table-column prop="description" label="库描述" show-overflow-tooltip/>
           <el-table-column fixed="right" label="操作" width="150">
@@ -64,6 +64,9 @@
       </div>
       <el-dialog :title="operation + '库'" :visible.sync="dialogFormVisible" width="30%">
         <el-form ref="libraryForm" size="small" :model="library" :rules="rules" label-width="100px">
+          <el-form-item label="库编号" prop="libraryCode" class="property-input">
+            <el-input v-model="library.libraryCode" :disabled="operation === '编辑'"/>
+          </el-form-item>
           <el-form-item label="库名称" prop="libraryName" class="property-input">
             <el-input v-model="library.libraryName"/>
           </el-form-item>
@@ -82,11 +85,24 @@
 
 <script>
 import { queryCatalog } from '@/api/catalog'
-import { createLibrary, editLibrary, queryLibrary } from '@/api/library'
+import { createLibrary, editLibrary, existLibrary, queryLibrary } from '@/api/library'
 
 export default {
   name: 'Library',
   data() {
+    const checkExistCode = (rule, value, callback) => {
+      if (this.operation === '编辑') {
+        callback()
+        return
+      }
+      existLibrary({ probe: value })
+        .then(res => {
+          if (res.code === 0 && res.data) {
+            callback(new Error('该库编号已存在'))
+          }
+          callback()
+        })
+    }
     return {
       catalogs: [],
       list: [],
@@ -105,12 +121,20 @@ export default {
       dialogFormVisible: false,
       operation: '',
       library: {
+        libraryCode: null,
         libraryName: null,
         description: null,
         catalogId: null,
         catalogName: null
       },
       rules: {
+        libraryCode: [
+          { required: true, message: '请输入库编号', trigger: 'blur' },
+          {
+            pattern: /^[^\u4e00-\u9fa5]+$/, message: '请输入非中文字符', trigger: 'blur'
+          },
+          { validator: checkExistCode, trigger: 'blur' }
+        ],
         libraryName: [
           { required: true, message: '请输入库名称', trigger: 'blur' },
           { min: 1, max: 50, message: '长度在1到50个字符', trigger: 'blur' }
@@ -125,9 +149,11 @@ export default {
   created() {
     queryCatalog({})
       .then(res => {
-        this.catalogs = res.data.content
+        if (res.code === 0) {
+          this.catalogs = res.data.content
+        }
       })
-    this.probe.catalogId = this.$router.history.current.query.catalogId
+    this.probe.catalogId = this.$route.params.catalogId
     if (this.probe.catalogId != null) {
       this.query()
     }
@@ -143,12 +169,18 @@ export default {
       }
       queryLibrary(queryParam)
         .then(res => {
-          this.list = res.data.content
-          this.totalElements = res.data.totalElements
-          this.totalPages = res.data.totalPages
+          if (res.code === 0) {
+            this.list = res.data.content
+            this.totalElements = res.data.totalElements
+            this.totalPages = res.data.totalPages
+          }
         })
     },
     submitQueryForm() {
+      if (this.probe.catalogId == null) {
+        this.$message('请先选择一个目录')
+        return
+      }
       this.query()
     },
     resetQueryForm(formName) {
@@ -167,13 +199,20 @@ export default {
     },
     handleEdit(row) {
       this.library.id = row.id
+      this.library.libraryCode = row.libraryCode
       this.library.libraryName = row.libraryName
       this.library.description = row.description
+      this.library.catalogId = this.probe.catalogId
       this.dialogFormVisible = true
       this.operation = '编辑'
     },
     handleCreate() {
+      if (this.probe.catalogId == null) {
+        this.$message('请先选择一个目录')
+        return
+      }
       this.library = {}
+      this.library.catalogId = this.probe.catalogId
       this.dialogFormVisible = true
       this.operation = '创建'
     },
@@ -184,17 +223,21 @@ export default {
     submitLibraryForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if (this.operation === '修改') {
+          if (this.operation === '编辑') {
             editLibrary(this.library)
-              .then(() => {
-                this.$message.success('修改成功')
-                this.query()
+              .then(res => {
+                if (res.code === 0) {
+                  this.$message.success('修改成功')
+                  this.query()
+                }
               })
           } else {
             createLibrary(this.library)
-              .then(() => {
-                this.$message.success('创建成功')
-                this.query()
+              .then(res => {
+                if (res.code === 0) {
+                  this.$message.success('创建成功')
+                  this.query()
+                }
               })
           }
           this.dialogFormVisible = false
