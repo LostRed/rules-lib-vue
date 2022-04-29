@@ -4,10 +4,24 @@
       <div class="operation-panel">
         <div>
           <el-form ref="queryForm" size="small" :inline="true" :model="probe">
-            <el-form-item label="目录名称" prop="catalogName">
-              <el-input v-model="probe.catalogName" placeholder="请输入关键字"/>
+            <el-form-item label="目录" prop="libraryId">
+              <el-select v-model="probe.catalogId" placeholder="请选择目录">
+                <el-option
+                  v-for="catalog in catalogs"
+                  :key="catalog.id"
+                  :label="catalog.description"
+                  :value="catalog.id"
+                  @change="probe.catalogId = catalog.id"
+                >
+                  <span style="float: left">{{ catalog.description }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ catalog.catalogName }}</span>
+                </el-option>
+              </el-select>
             </el-form-item>
-            <el-form-item label="目录描述" prop="description">
+            <el-form-item label="库名称" prop="libraryName">
+              <el-input v-model="probe.libraryName" placeholder="请输入关键字"/>
+            </el-form-item>
+            <el-form-item label="库描述" prop="description">
               <el-input v-model="probe.description" placeholder="请输入关键字"/>
             </el-form-item>
             <el-form-item>
@@ -26,7 +40,8 @@
         <el-table :data="list" size="small" border fit highlight-current-row>
           <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
           <el-table-column prop="catalogName" label="目录名称" width="300"/>
-          <el-table-column prop="description" label="目录描述" show-overflow-tooltip/>
+          <el-table-column prop="libraryName" label="库名称" width="300"/>
+          <el-table-column prop="description" label="库描述" show-overflow-tooltip/>
           <el-table-column fixed="right" label="操作" width="150">
             <template v-slot="scope">
               <el-button type="text" size="small" @click="handleEnter(scope.row)">进入</el-button>
@@ -47,18 +62,18 @@
           @size-change="handleSizeChange"
         />
       </div>
-      <el-dialog :title="operation + '目录'" :visible.sync="dialogFormVisible" width="30%">
-        <el-form ref="catalogForm" size="small" :model="catalog" :rules="rules" label-width="100px">
-          <el-form-item label="目录名称" prop="catalogName" class="property-input">
-            <el-input v-model="catalog.catalogName"/>
+      <el-dialog :title="operation + '库'" :visible.sync="dialogFormVisible" width="30%">
+        <el-form ref="libraryForm" size="small" :model="library" :rules="rules" label-width="100px">
+          <el-form-item label="库名称" prop="libraryName" class="property-input">
+            <el-input v-model="library.libraryName"/>
           </el-form-item>
-          <el-form-item label="目录描述" prop="description" class="property-input">
-            <el-input v-model="catalog.description"/>
+          <el-form-item label="库描述" prop="description" class="property-input">
+            <el-input v-model="library.description"/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button size="small" @click="closeDialog('catalogForm')">取消</el-button>
-          <el-button size="small" type="primary" @click="submitCatalogForm('catalogForm')">确定</el-button>
+          <el-button size="small" @click="closeDialog('libraryForm')">取消</el-button>
+          <el-button size="small" type="primary" @click="submitLibraryForm('libraryForm')">确定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -66,17 +81,20 @@
 </template>
 
 <script>
-import { createCatalog, editCatalog, queryCatalog } from '@/api/catalog'
+import { queryCatalog } from '@/api/catalog'
+import { createLibrary, editLibrary, queryLibrary } from '@/api/library'
 
 export default {
-  name: 'Catalog',
+  name: 'Library',
   data() {
     return {
+      catalogs: [],
       list: [],
       probe: {
         id: null,
-        catalogName: null,
-        description: null
+        libraryName: null,
+        description: null,
+        catalogId: null
       },
       pageable: {
         page: 0,
@@ -86,23 +104,30 @@ export default {
       totalPages: 0,
       dialogFormVisible: false,
       operation: '',
-      catalog: {
-        catalogName: null,
-        description: null
+      library: {
+        libraryName: null,
+        description: null,
+        catalogId: null,
+        catalogName: null
       },
       rules: {
-        catalogName: [
-          { required: true, message: '请输入目录名称', trigger: 'blur' },
+        libraryName: [
+          { required: true, message: '请输入库名称', trigger: 'blur' },
           { min: 1, max: 50, message: '长度在1到50个字符', trigger: 'blur' }
         ],
         description: [
-          { required: true, message: '请输入目录描述', trigger: 'blur' },
+          { required: true, message: '请输入库描述', trigger: 'blur' },
           { min: 1, max: 50, message: '长度在1到50个字符', trigger: 'blur' }
         ]
       }
     }
   },
   created() {
+    queryCatalog({})
+      .then(res => {
+        this.catalogs = res.data.content
+      })
+    this.probe.catalogId = this.$router.history.current.query.catalogId
     this.query()
   },
   methods: {
@@ -114,7 +139,7 @@ export default {
         probe: this.probe,
         pageable: this.pageable
       }
-      queryCatalog(queryParam)
+      queryLibrary(queryParam)
         .then(res => {
           this.list = res.data.content
           this.totalElements = res.data.totalElements
@@ -136,23 +161,17 @@ export default {
       this.query()
     },
     handleEnter(row) {
-      this.$message('当前目录: ' + row.description)
-      this.$router.push({
-        path: '/library',
-        query: {
-          catalogId: row.id
-        }
-      })
+      this.$message(row.id.toString())
     },
     handleEdit(row) {
-      this.catalog.id = row.id
-      this.catalog.catalogName = row.catalogName
-      this.catalog.description = row.description
+      this.library.id = row.id
+      this.library.libraryName = row.libraryName
+      this.library.description = row.description
       this.dialogFormVisible = true
       this.operation = '编辑'
     },
     handleCreate() {
-      this.catalog = {}
+      this.library = {}
       this.dialogFormVisible = true
       this.operation = '创建'
     },
@@ -160,17 +179,17 @@ export default {
       this.dialogFormVisible = false
       this.$refs[formName].resetFields()
     },
-    submitCatalogForm(formName) {
+    submitLibraryForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.operation === '修改') {
-            editCatalog(this.catalog)
+            editLibrary(this.library)
               .then(() => {
                 this.$message.success('修改成功')
                 this.query()
               })
           } else {
-            createCatalog(this.catalog)
+            createLibrary(this.library)
               .then(() => {
                 this.$message.success('创建成功')
                 this.query()

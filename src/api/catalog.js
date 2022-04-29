@@ -1,10 +1,10 @@
 import { api } from '@/utils/request'
 
-export function queryCatalog(probe) {
+export function queryCatalog(queryParam) {
   return api({
     url: '/catalog/query',
     method: 'post',
-    data: probe
+    data: queryParam
   })
 }
 
