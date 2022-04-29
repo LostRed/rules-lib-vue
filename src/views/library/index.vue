@@ -128,7 +128,9 @@ export default {
         this.catalogs = res.data.content
       })
     this.probe.catalogId = this.$router.history.current.query.catalogId
-    this.query()
+    if (this.probe.catalogId != null) {
+      this.query()
+    }
   },
   methods: {
     indexMethod(index) {
