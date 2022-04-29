@@ -4,9 +4,14 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 
 // create an axios instance
-const service = axios.create({
+export const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
+  timeout: 5000 // request timeout
+})
+
+export const api = axios.create({
+  baseURL: '/api', // api2 的 base_url
   timeout: 5000 // request timeout
 })
 
@@ -35,7 +40,7 @@ service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
-  */
+   */
 
   /**
    * Determine the request status by custom code
@@ -79,6 +84,21 @@ service.interceptors.response.use(
       duration: 5 * 1000
     })
     return Promise.reject(error)
+  }
+)
+
+api.interceptors.response.use(
+  response => {
+    const res = response.data
+    if (res.code !== 0) {
+      Message({
+        message: res.message || 'Error',
+        type: 'error',
+        duration: 5 * 1000
+      })
+    } else {
+      return res
+    }
   }
 )
 
