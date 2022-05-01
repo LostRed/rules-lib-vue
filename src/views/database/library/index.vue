@@ -57,7 +57,7 @@
           :total="totalElements"
           :current-page="pageable.page + 1"
           :page-size="pageable.size"
-          :page-sizes="[1, 5, 10, 20, 50, 100]"
+          :page-sizes="[ 10, 15, 20, 50]"
           @current-change="handleCurrentChange"
           @size-change="handleSizeChange"
         />
@@ -68,10 +68,10 @@
             <el-input v-model="library.libraryCode" :disabled="operation === '编辑'"/>
           </el-form-item>
           <el-form-item label="库名称" prop="libraryName" class="property-input">
-            <el-input v-model="library.libraryName"/>
+            <el-input v-model="library.libraryName" maxlength="50" show-word-limit/>
           </el-form-item>
           <el-form-item label="库描述" prop="description" class="property-input">
-            <el-input v-model="library.description"/>
+            <el-input v-model="library.description" maxlength="50" show-word-limit/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -90,8 +90,8 @@ import { createLibrary, editLibrary, existLibrary, queryLibrary } from '@/api/li
 export default {
   name: 'Library',
   data() {
-    const checkExistCode = (rule, value, callback) => {
-      if (this.operation === '编辑') {
+    const checkLibraryCode = (rule, value, callback) => {
+      if (this.operation === '编辑' && value == null) {
         callback()
         return
       }
@@ -133,7 +133,7 @@ export default {
           {
             pattern: /^[^\u4e00-\u9fa5]+$/, message: '请输入非中文字符', trigger: 'blur'
           },
-          { validator: checkExistCode, trigger: 'blur' }
+          { validator: checkLibraryCode, trigger: 'blur' }
         ],
         libraryName: [
           { required: true, message: '请输入库名称', trigger: 'blur' },

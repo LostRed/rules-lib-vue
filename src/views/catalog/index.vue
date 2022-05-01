@@ -42,7 +42,7 @@
           :total="totalElements"
           :current-page="pageable.page + 1"
           :page-size="pageable.size"
-          :page-sizes="[1, 5, 10, 20, 50, 100]"
+          :page-sizes="[ 10, 15, 20, 50]"
           @current-change="handleCurrentChange"
           @size-change="handleSizeChange"
         />
@@ -50,10 +50,10 @@
       <el-dialog :title="operation + '目录'" :visible.sync="dialogFormVisible" width="30%">
         <el-form ref="catalogForm" size="small" :model="catalog" :rules="rules" label-width="100px">
           <el-form-item label="目录名称" prop="catalogName" class="property-input">
-            <el-input v-model="catalog.catalogName"/>
+            <el-input v-model="catalog.catalogName" maxlength="50" show-word-limit/>
           </el-form-item>
           <el-form-item label="目录描述" prop="description" class="property-input">
-            <el-input v-model="catalog.description"/>
+            <el-input v-model="catalog.description" maxlength="50" show-word-limit/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -116,9 +116,11 @@ export default {
       }
       queryCatalog(queryParam)
         .then(res => {
-          this.list = res.data.content
-          this.totalElements = res.data.totalElements
-          this.totalPages = res.data.totalPages
+          if (res.code === 0) {
+            this.list = res.data.content
+            this.totalElements = res.data.totalElements
+            this.totalPages = res.data.totalPages
+          }
         })
     },
     submitQueryForm() {

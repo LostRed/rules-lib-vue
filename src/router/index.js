@@ -49,33 +49,33 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
+      name: '仪表盘',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '仪表盘', icon: 'dashboard' }
     }]
   },
   //
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
+  // {
+  //   path: '/example',
+  //   component: Layout,
+  //   redirect: '/example/table',
+  //   name: 'Example',
+  //   meta: { title: 'Example', icon: 'el-icon-s-help' },
+  //   children: [
+  //     {
+  //       path: 'table',
+  //       name: 'Table',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: 'Table', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'tree',
+  //       name: 'Tree',
+  //       component: () => import('@/views/tree/index'),
+  //       meta: { title: 'Tree', icon: 'tree' }
+  //     }
+  //   ]
+  // },
   //
   // {
   //   path: '/form',
@@ -173,9 +173,9 @@ export const constantRoutes = [
     children: [{
       path: 'index',
       component: () => import('@/views/catalog/index'),
-      name: 'Catalog',
+      name: '目录',
       meta: {
-        title: 'Catalog',
+        title: '目录',
         icon: 'tree', // 图标
         roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
         noCache: true // 不会被 <keep-alive> 缓存
@@ -189,13 +189,13 @@ export const constantRoutes = [
     redirect: '/database/library', // 重定向地址，在面包屑中点击会重定向去的地址
     hidden: false, // 不在侧边栏显示
     alwaysShow: false, // 一直显示根路由
-    meta: { title: 'Database', icon: 'el-icon-s-help', roles: ['admin', 'editor'] },
+    meta: { title: '数据库', icon: 'el-icon-s-help', roles: ['admin', 'editor'] },
     children: [{
       path: 'library',
       component: () => import('@/views/database/library/index'),
-      name: 'Library',
+      name: '库',
       meta: {
-        title: 'Library',
+        title: '库',
         icon: 'tree', // 图标
         roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
         noCache: true // 不会被 <keep-alive> 缓存
@@ -204,9 +204,9 @@ export const constantRoutes = [
     {
       path: 'attribute',
       component: () => import('@/views/database/attribute/index'),
-      name: 'Attribute',
+      name: '属性',
       meta: {
-        title: 'Attribute',
+        title: '属性',
         icon: 'table', // 图标
         roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
         noCache: true // 不会被 <keep-alive> 缓存
@@ -224,9 +224,9 @@ export const constantRoutes = [
     children: [{
       path: 'index',
       component: () => import('@/views/database/library/index'),
-      name: 'Model',
+      name: '模型',
       meta: {
-        title: 'Model',
+        title: '模型',
         icon: 'table', // 图标
         roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
         noCache: true // 不会被 <keep-alive> 缓存

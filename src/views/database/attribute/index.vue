@@ -2,7 +2,13 @@
   <div class="fixed-container">
     <div class="app-container">
       <div class="left-panel">
-        <el-tree :data="tree" :props="defaultProps" default-expand-all @node-click="handleNodeClick"/>
+        <el-tree
+          :data="tree"
+          :props="defaultProps"
+          node-key="id"
+          default-expand-all
+          @node-click="handleTreeNodeClick"
+        />
       </div>
       <div class="right-panel">
         <div class="operation-panel">
@@ -12,14 +18,14 @@
                 <el-input v-model="probe.attributeName" placeholder="请输入关键字"/>
               </el-form-item>
               <el-form-item label="值类型" prop="valueType">
-                <el-select v-model="probe.valueType" placeholder="请选择值类型">
+                <el-select v-model="valueType">
                   <el-option label="全部" value="all"/>
                   <el-option label="单值" value="ONE"/>
                   <el-option label="多值" value="MANY"/>
                 </el-select>
               </el-form-item>
               <el-form-item label="是否展示" prop="displayed">
-                <el-select v-model="probe.displayed" placeholder="请选择值类型">
+                <el-select v-model="displayed">
                   <el-option label="全部" value="all"/>
                   <el-option label="是" value="true"/>
                   <el-option label="否" value="false"/>
@@ -40,14 +46,22 @@
         <div style="margin-bottom: 17px">
           <el-table :data="list" size="small" border fit highlight-current-row>
             <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
-            <el-table-column prop="attributeName" label="属性名称"/>
-            <el-table-column prop="valueType" label="值类型"/>
-            <el-table-column prop="valueList" label="值可选列表"/>
-            <el-table-column prop="sequence" label="顺序" width="100"/>
-            <el-table-column prop="displayed" label="是否展示" width="100"/>
+            <el-table-column prop="displayed" label="是否展示" width="100">
+              <template v-slot="scope">
+                <el-switch
+                  v-model="scope.row.displayed"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  @change="switchDisplayed(scope.row)"
+                />
+              </template>
+            </el-table-column>
+            <el-table-column prop="order" label="顺序" width="100"/>
+            <el-table-column prop="valueType" label="值类型" width="100" :formatter="formatValueType"/>
+            <el-table-column prop="attributeName" label="属性名称" width="200"/>
+            <el-table-column prop="valueList" label="值可选列表" :formatter="formatValueList"/>
             <el-table-column fixed="right" label="操作" width="150">
               <template v-slot="scope">
-                <el-button type="text" size="small" @click="handleEnter(scope.row)">进入</el-button>
                 <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
                 <el-button type="text" size="small">删除</el-button>
               </template>
@@ -60,37 +74,81 @@
             :total="totalElements"
             :current-page="pageable.page + 1"
             :page-size="pageable.size"
-            :page-sizes="[1, 5, 10, 20, 50, 100]"
+            :page-sizes="[ 10, 15, 20, 50]"
             @current-change="handleCurrentChange"
             @size-change="handleSizeChange"
           />
         </div>
       </div>
+      <el-dialog :title="operation + '属性'" :visible.sync="dialogFormVisible" width="30%">
+        <el-form ref="attributeForm" size="small" :model="attribute" :rules="rules" label-width="100px">
+          <el-form-item label="属性名称" prop="libraryCode" class="property-input">
+            <el-input v-model="attribute.attributeName"/>
+          </el-form-item>
+          <el-form-item label="值类型" prop="valueType" class="property-input">
+            <el-select v-model="attribute.valueType" @blur="resetAttributeForm('attributeForm')">
+              <el-option label="单值" value="ONE"/>
+              <el-option label="多值" value="MANY"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="值可选列表" prop="valueList" class="property-input">
+            <el-select
+              v-model="attribute.valueList"
+              multiple
+              filterable
+              allow-create
+              default-first-option
+              :disabled="attribute.valueType==='ONE'"
+            >
+              <el-option v-for="value in attribute.valueList" :key="value" :label="value" :value="value"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="顺序" prop="order" class="property-input">
+            <el-input-number v-model="attribute.order" :min="0"/>
+          </el-form-item>
+          <el-form-item label="是否展示" prop="displayed" class="property-input">
+            <el-switch v-model="attribute.displayed" active-color="#13ce66" inactive-color="#ff4949"/>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button size="small" @click="closeDialog('attributeForm')">取消</el-button>
+          <el-button size="small" type="primary" @click="submitLibraryForm('attributeForm')">确定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import { tree } from '@/api/attribute'
+import { createAttribute, editAttribute, queryAttribute, switchDisplayed, tree } from '@/api/attribute'
 
 export default {
   name: 'Attribute',
   data() {
+    const checkValueList = (rule, value, callback) => {
+      if (this.attribute.valueType === 'MANY' && (this.attribute.valueList == null || this.attribute.valueList.length === 0)) {
+        callback(new Error('请输入值可选列表'))
+        return
+      }
+      callback()
+    }
     return {
       tree: [],
       defaultProps: {
-        children: 'children',
-        label: 'label'
+        label: 'label',
+        children: 'children'
       },
       catalogs: [],
       list: [],
+      valueType: 'all',
+      displayed: 'all',
       probe: {
         id: null,
         attributeName: null,
-        valueType: 'all',
+        valueType: null,
         valueList: null,
-        displayed: 'all',
-        sequence: null,
+        displayed: null,
+        order: null,
         libraryId: null
       },
       pageable: {
@@ -104,11 +162,19 @@ export default {
       attribute: {
         id: null,
         attributeName: null,
-        valueType: null,
+        valueType: 'ONE',
         valueList: null,
-        displayed: null,
-        sequence: null,
+        displayed: true,
+        order: 0,
         libraryId: null
+      },
+      rules: {
+        attributeName: [
+          { required: true, message: '请输入属性名称', trigger: 'blur' }
+        ],
+        valueList: [
+          { validator: checkValueList, trigger: 'blur' }
+        ]
       }
     }
   },
@@ -119,6 +185,15 @@ export default {
     indexMethod(index) {
       return index + 1
     },
+    formatValueType(row, column, cellValue, index) {
+      return cellValue === 'ONE' ? '单值' : '多值'
+    },
+    formatValueList(row, column, cellValue, index) {
+      if (cellValue != null) {
+        return cellValue.join()
+      }
+      return null
+    },
     queryTree() {
       tree().then(res => {
         if (res.code === 0) {
@@ -126,8 +201,109 @@ export default {
         }
       })
     },
-    handleNodeClick(data) {
-      console.log(data)
+    query() {
+      this.valueType === 'all' ? this.probe.valueType = null : this.probe.valueType = this.valueType
+      this.displayed === 'all' ? this.probe.displayed = null : this.probe.displayed = this.displayed
+      const queryParam = {
+        probe: this.probe,
+        pageable: this.pageable
+      }
+      queryAttribute(queryParam)
+        .then(res => {
+          if (res.code === 0) {
+            this.list = res.data.content
+            this.totalElements = res.data.totalElements
+            this.totalPages = res.data.totalPages
+          }
+        })
+    },
+    resetQueryForm(formName) {
+      this.$refs[formName].resetFields()
+      this.valueType = 'all'
+      this.displayed = 'all'
+    },
+    submitQueryForm() {
+      if (this.probe.libraryId == null) {
+        this.$message('请先选择一个库')
+        return
+      }
+      this.query()
+    },
+    handleTreeNodeClick(data, node, element) {
+      if (node.isLeaf) {
+        this.probe.libraryId = node.key
+        this.query()
+      }
+    },
+    handleCurrentChange(val) {
+      this.pageable.page = val - 1
+      this.query()
+    },
+    handleSizeChange(val) {
+      this.pageable.size = val
+      this.query()
+    },
+    handleEdit(row) {
+      this.attribute.id = row.id
+      this.attribute.attributeName = row.attributeName
+      this.attribute.valueType = row.valueType
+      this.attribute.valueList = row.valueList
+      this.attribute.displayed = row.displayed
+      this.attribute.order = row.order
+      this.attribute.libraryId = this.probe.libraryId
+      this.dialogFormVisible = true
+      this.operation = '编辑'
+    },
+    handleCreate() {
+      if (this.probe.libraryId == null) {
+        this.$message('请先选择一个库')
+        return
+      }
+      this.attribute = {}
+      this.attribute.libraryId = this.probe.libraryId
+      this.attribute.valueType = 'ONE'
+      this.attribute.displayed = true
+      this.attribute.order = 0
+      this.dialogFormVisible = true
+      this.operation = '创建'
+    },
+    resetAttributeForm(formName) {
+      if (this.attribute.valueType === 'MANY') {
+        return
+      }
+      this.$refs[formName].resetFields()
+      this.attribute.valueList = null
+    },
+    switchDisplayed(row) {
+      switchDisplayed({ probe: row.id })
+    },
+    closeDialog(formName) {
+      this.dialogFormVisible = false
+      this.$refs[formName].resetFields()
+    },
+    submitLibraryForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (this.operation === '编辑') {
+            editAttribute(this.attribute)
+              .then(res => {
+                if (res.code === 0) {
+                  this.$message.success('修改成功')
+                  this.query()
+                }
+              })
+          } else {
+            createAttribute(this.attribute)
+              .then(res => {
+                if (res.code === 0) {
+                  this.$message.success('创建成功')
+                  this.query()
+                }
+              })
+          }
+          this.dialogFormVisible = false
+        }
+      })
     }
   }
 }
