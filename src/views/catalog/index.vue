@@ -22,7 +22,7 @@
           <el-button type="success" size="small" @click="handleCreate()">创建</el-button>
         </div>
       </div>
-      <div style="margin-bottom: 17px">
+      <div style="margin-bottom: 20px">
         <el-table :data="list" size="small" border fit highlight-current-row>
           <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
           <el-table-column prop="catalogName" label="目录名称" width="300"/>

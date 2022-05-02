@@ -1,17 +1,17 @@
 import { api } from '@/utils/request'
 
-export function tree() {
+export function queryTree() {
   return api({
     url: '/catalog/tree',
     method: 'get'
   })
 }
 
-export function queryByLibrary(probe) {
+export function queryByLibrary(queryParam) {
   return api({
     url: '/attribute/queryByLibrary',
     method: 'post',
-    data: probe
+    data: queryParam
   })
 }
 

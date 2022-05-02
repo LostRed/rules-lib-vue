@@ -32,7 +32,7 @@ export function queryByCatalog(probe) {
   })
 }
 
-export function existLibrary(probe) {
+export function existsLibrary(probe) {
   return api({
     url: '/library/exists',
     method: 'post',

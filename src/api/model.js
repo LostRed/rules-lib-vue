@@ -1,10 +1,10 @@
 import { api } from '@/utils/request'
 
-export function queryModel(queryParam) {
+export function searchModel(searchParam) {
   return api({
-    url: '/model/query',
+    url: '/model/search',
     method: 'post',
-    data: queryParam
+    data: searchParam
   })
 }
 
@@ -29,5 +29,21 @@ export function queryByLibrary(probe) {
     url: '/model/queryByCatalog',
     method: 'post',
     data: probe
+  })
+}
+
+export function existsModel(queryParam) {
+  return api({
+    url: '/model/exists',
+    method: 'post',
+    data: queryParam
+  })
+}
+
+export function deleteModel(queryParam) {
+  return api({
+    url: '/model/delete',
+    method: 'post',
+    data: queryParam
   })
 }

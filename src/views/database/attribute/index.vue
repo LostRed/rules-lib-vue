@@ -1,7 +1,7 @@
 <template>
   <div class="fixed-container">
     <div class="app-container">
-      <div class="left-panel">
+      <div class="left-panel" style="float: left">
         <el-tree
           :data="tree"
           :props="defaultProps"
@@ -43,7 +43,7 @@
             <el-button type="success" size="small" @click="handleCreate()">创建</el-button>
           </div>
         </div>
-        <div style="margin-bottom: 17px">
+        <div style="margin-bottom: 20px">
           <el-table :data="list" size="small" border fit highlight-current-row>
             <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
             <el-table-column prop="displayed" label="是否展示" width="100">
@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import { createAttribute, editAttribute, queryAttribute, switchDisplayed, tree } from '@/api/attribute'
+import { createAttribute, editAttribute, queryAttribute, switchDisplayed, queryTree } from '@/api/attribute'
 
 export default {
   name: 'Attribute',
@@ -179,7 +179,11 @@ export default {
     }
   },
   created() {
-    this.queryTree()
+    queryTree().then(res => {
+      if (res.code === 0) {
+        this.tree = res.data
+      }
+    })
   },
   methods: {
     indexMethod(index) {
@@ -193,13 +197,6 @@ export default {
         return cellValue.join()
       }
       return null
-    },
-    queryTree() {
-      tree().then(res => {
-        if (res.code === 0) {
-          this.tree = res.data
-        }
-      })
     },
     query() {
       this.valueType === 'all' ? this.probe.valueType = null : this.probe.valueType = this.valueType
@@ -318,7 +315,6 @@ export default {
 
 .app-container {
   height: 100%;
-  display: flex;
 }
 
 .app-container > div:nth-child(2) {
@@ -326,7 +322,6 @@ export default {
 }
 
 .left-panel {
-  width: 12%;
   min-width: 200px;
   margin-right: 20px;
 }
@@ -335,6 +330,7 @@ export default {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .right-panel > div:nth-child(2) {
@@ -354,5 +350,4 @@ export default {
 .property-input {
   width: 90%;
 }
-
 </style>

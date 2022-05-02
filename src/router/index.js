@@ -173,7 +173,7 @@ export const constantRoutes = [
     children: [{
       path: 'index',
       component: () => import('@/views/catalog/index'),
-      name: '目录',
+      name: 'Catalog',
       meta: {
         title: '目录',
         icon: 'tree', // 图标
@@ -193,7 +193,7 @@ export const constantRoutes = [
     children: [{
       path: 'library',
       component: () => import('@/views/database/library/index'),
-      name: '库',
+      name: 'Library',
       meta: {
         title: '库',
         icon: 'tree', // 图标
@@ -204,7 +204,7 @@ export const constantRoutes = [
     {
       path: 'attribute',
       component: () => import('@/views/database/attribute/index'),
-      name: '属性',
+      name: 'Attribute',
       meta: {
         title: '属性',
         icon: 'table', // 图标
@@ -223,10 +223,22 @@ export const constantRoutes = [
     meta: { roles: ['admin', 'editor'] }, // 你可以在根路由设置权限，这样它下面所有的子路由都继承了这个权限
     children: [{
       path: 'index',
-      component: () => import('@/views/database/library/index'),
-      name: '模型',
+      component: () => import('@/views/model/index'),
+      name: 'Model',
       meta: {
         title: '模型',
+        icon: 'table', // 图标
+        roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
+        noCache: true // 不会被 <keep-alive> 缓存
+      }
+    },
+    {
+      path: 'edit',
+      component: () => import('@/views/model/components/create'),
+      name: 'CreateModel',
+      hidden: true,
+      meta: {
+        title: '创建模型',
         icon: 'table', // 图标
         roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
         noCache: true // 不会被 <keep-alive> 缓存

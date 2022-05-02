@@ -36,7 +36,7 @@
           <el-button type="success" size="small" @click="handleCreate()">创建</el-button>
         </div>
       </div>
-      <div style="margin-bottom: 17px">
+      <div style="margin-bottom: 20px">
         <el-table :data="list" size="small" border fit highlight-current-row>
           <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
           <el-table-column prop="libraryCode" label="库编号" width="300"/>
@@ -85,7 +85,7 @@
 
 <script>
 import { queryCatalog } from '@/api/catalog'
-import { createLibrary, editLibrary, existLibrary, queryLibrary } from '@/api/library'
+import { createLibrary, editLibrary, existsLibrary, queryLibrary } from '@/api/library'
 
 export default {
   name: 'Library',
@@ -95,7 +95,7 @@ export default {
         callback()
         return
       }
-      existLibrary({ probe: value })
+      existsLibrary({ probe: value })
         .then(res => {
           if (res.code === 0 && res.data) {
             callback(new Error('该库编号已存在'))
