@@ -195,7 +195,14 @@ export default {
       this.query()
     },
     handleEnter(row) {
-      this.$message(row.id.toString())
+      this.$message('当前库: ' + row.libraryName)
+      this.$router.push({
+        name: 'Model',
+        params: {
+          catalogId: this.probe.catalogId,
+          libraryId: row.id
+        }
+      })
     },
     handleEdit(row) {
       this.library.id = row.id

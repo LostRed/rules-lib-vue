@@ -10,36 +10,13 @@
         <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="12">
           <div class="top-panel">
             <el-steps :active="active" align-center>
-              <el-step title="选择库" description="选择该模型的库原型"/>
               <el-step title="编辑基本属性" description="编辑该模型的基本属性，这些属性将作为检索时的关键字"/>
               <el-step title="编辑自定义属性" description="编辑该模型的自定义属性，这些属性将作为检索时的过滤条件"/>
+              <el-step title="确认" description="确认无误后，点击完成"/>
             </el-steps>
           </div>
           <div class="bottom-panel">
-            <div style="margin-bottom: 50px">
-              <el-button :disabled="active===0" size="small" @click="prev">上一步</el-button>
-              <el-button size="small" @click="next">{{ nextButtonName }}</el-button>
-            </div>
             <div v-if="active===0" class="step">
-              <el-form
-                ref="libraryForm"
-                size="small"
-                :model="model"
-                label-width="100px"
-                :rules="rules"
-              >
-                <el-form-item label="库" prop="libraryId">
-                  <el-cascader
-                    v-model="selectedOptions"
-                    :options="options"
-                    :props="defaultProps"
-                    placeholder="请选择库"
-                    @change="handleChange"
-                  />
-                </el-form-item>
-              </el-form>
-            </div>
-            <div v-if="active===1" class="step">
               <el-form
                 ref="modelPropForm"
                 size="small"
@@ -55,7 +32,7 @@
                 </el-form-item>
               </el-form>
             </div>
-            <div v-if="active===2" class="step">
+            <div v-if="active===1" class="step">
               <el-form ref="modelAttrForm" size="small" :model="model" label-width="100px">
                 <el-row>
                   <el-col v-for="attribute in model.attributes" :key="attribute.id" :span="12">
@@ -77,16 +54,8 @@
                 </el-row>
               </el-form>
             </div>
-            <div v-if="active===3" class="step">
+            <div v-if="active===2" class="step">
               <el-form ref="modelForm" size="small" :model="model" label-width="100px">
-                <el-form-item label="库" prop="libraryId">
-                  <el-cascader
-                    v-model="selectedOptions"
-                    :options="options"
-                    :props="defaultProps"
-                    :disabled="true"
-                  />
-                </el-form-item>
                 <el-form-item label="模型编号" prop="code">
                   <el-input v-model="model.code" :disabled="true" class="property-input"/>
                 </el-form-item>
@@ -94,6 +63,18 @@
                   <el-input v-model="model.keyword" :disabled="true" class="property-input"/>
                 </el-form-item>
               </el-form>
+            </div>
+            <div v-if="active===3">
+              <el-result icon="success" title="成功提示" sub-title="请根据提示进行操作">
+                <template slot="extra">
+                  <el-button type="primary" size="small" @click="once">继续</el-button>
+                  <el-button size="small" @click="back">返回</el-button>
+                </template>
+              </el-result>
+            </div>
+            <div v-if="active!==3" class="button-panel" style="margin-top: 50px">
+              <el-button :disabled="active===0" size="small" @click="prev">上一步</el-button>
+              <el-button :disabled="model.libraryId==null" size="small" @click="next">{{ nextButtonName }}</el-button>
             </div>
           </div>
         </el-col>
@@ -137,9 +118,6 @@ export default {
         attributes: []
       },
       rules: {
-        libraryId: [
-          { required: true, message: '请选择库', trigger: 'blur' }
-        ],
         code: [
           { required: true, message: '请输入模型编号', trigger: 'blur' },
           { validator: checkModelCode, trigger: 'blur' }
@@ -151,11 +129,27 @@ export default {
     }
   },
   created() {
-    this.options = this.$route.params.options
+    this.model.libraryId = this.$route.params.libraryId
+    if (this.model.libraryId == null) {
+      this.$message.warning('未选择库，无法查询到自定义属性')
+      return
+    }
+    queryByLibrary({ probe: this.model.libraryId })
+      .then(res => {
+        if (res.code === 0) {
+          console.log(res.data)
+          this.model.attributes = res.data
+        }
+      })
   },
   methods: {
     back() {
-      this.$router.push({ name: 'Model' })
+      this.$router.push({
+        name: 'Model',
+        params: {
+          libraryId: this.model.libraryId
+        }
+      })
     },
     prev() {
       if (this.active-- < 1) {
@@ -179,33 +173,16 @@ export default {
           if (this.active++ > 2) {
             this.active = 0
           }
-          switch (this.active) {
-            case 0:
-              this.nextButtonName = '下一步'
-              break
-            case 1:
-              this.nextButtonName = '下一步'
-              break
-            case 2:
-              this.nextButtonName = '下一步'
-              break
-            default:
-              this.nextButtonName = '完成'
+          if (this.active === 2) {
+            this.nextButtonName = '完成'
+          } else {
+            this.nextButtonName = '下一步'
           }
         }
       }
       if (this.active === 0) {
-        this.$refs['libraryForm'].validate(next)
-      } else if (this.active === 1) {
         this.$refs['modelPropForm'].validate(next)
-        queryByLibrary({ probe: this.model.libraryId })
-          .then(res => {
-            if (res.code === 0) {
-              console.log(res.data)
-              this.model.attributes = res.data
-            }
-          })
-      } else if (this.active === 3) {
+      } else if (this.active === 2) {
         createModel(this.model)
           .then(res => {
             if (res.code === 0) {
@@ -217,9 +194,8 @@ export default {
         next(true)
       }
     },
-    handleChange(selectedOptions) {
-      this.model.libraryId = selectedOptions.slice(-1)[0]
-      this.$message('模型库id为' + this.model.libraryId)
+    once() {
+      this.active = 0
     }
   }
 }
@@ -249,15 +225,20 @@ export default {
 }
 
 .bottom-panel {
-  padding: 50px;
+  padding: 50px 30px 30px 30px;
   box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.2);
 }
 
 .step {
-  padding-bottom: 20px;
+  padding: 20px;
 }
 
 .property-input {
   width: 90%;
+}
+
+.button-panel {
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

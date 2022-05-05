@@ -44,7 +44,7 @@
           </div>
         </div>
         <div style="margin-bottom: 20px">
-          <el-table :data="list" size="small" border fit highlight-current-row>
+          <el-table :data="list" size="small" border fit highlight-current-row height="100%">
             <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
             <el-table-column prop="displayed" label="是否展示" width="100">
               <template v-slot="scope">
@@ -59,7 +59,7 @@
             <el-table-column prop="order" label="顺序" width="100"/>
             <el-table-column prop="valueType" label="值类型" width="100" :formatter="formatValueType"/>
             <el-table-column prop="attributeName" label="属性名称" width="200"/>
-            <el-table-column prop="valueList" label="值可选列表" :formatter="formatValueList"/>
+            <el-table-column prop="valueList" label="值可选列表" :formatter="formatValueList" show-overflow-tooltip/>
             <el-table-column fixed="right" label="操作" width="150">
               <template v-slot="scope">
                 <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
@@ -86,7 +86,7 @@
             <el-input v-model="attribute.attributeName"/>
           </el-form-item>
           <el-form-item label="值类型" prop="valueType" class="property-input">
-            <el-select v-model="attribute.valueType" @blur="resetAttributeForm('attributeForm')">
+            <el-select v-model="attribute.valueType">
               <el-option label="单值" value="ONE"/>
               <el-option label="多值" value="MANY"/>
             </el-select>
@@ -98,13 +98,12 @@
               filterable
               allow-create
               default-first-option
-              :disabled="attribute.valueType==='ONE'"
             >
               <el-option v-for="value in attribute.valueList" :key="value" :label="value" :value="value"/>
             </el-select>
           </el-form-item>
           <el-form-item label="顺序" prop="order" class="property-input">
-            <el-input-number v-model="attribute.order" :min="0"/>
+            <el-input-number v-model="attribute.order" :min="0" :max="100"/>
           </el-form-item>
           <el-form-item label="是否展示" prop="displayed" class="property-input">
             <el-switch v-model="attribute.displayed" active-color="#13ce66" inactive-color="#ff4949"/>
@@ -125,13 +124,6 @@ import { createAttribute, editAttribute, queryAttribute, switchDisplayed, queryT
 export default {
   name: 'Attribute',
   data() {
-    const checkValueList = (rule, value, callback) => {
-      if (this.attribute.valueType === 'MANY' && (this.attribute.valueList == null || this.attribute.valueList.length === 0)) {
-        callback(new Error('请输入值可选列表'))
-        return
-      }
-      callback()
-    }
     return {
       tree: [],
       defaultProps: {
@@ -171,9 +163,6 @@ export default {
       rules: {
         attributeName: [
           { required: true, message: '请输入属性名称', trigger: 'blur' }
-        ],
-        valueList: [
-          { validator: checkValueList, trigger: 'blur' }
         ]
       }
     }
@@ -263,13 +252,6 @@ export default {
       this.attribute.order = 0
       this.dialogFormVisible = true
       this.operation = '创建'
-    },
-    resetAttributeForm(formName) {
-      if (this.attribute.valueType === 'MANY') {
-        return
-      }
-      this.$refs[formName].resetFields()
-      this.attribute.valueList = null
     },
     switchDisplayed(row) {
       switchDisplayed({ probe: row.id })

@@ -169,7 +169,7 @@ export default {
             editCatalog(this.catalog)
               .then(res => {
                 if (res.code === 0) {
-                  this.$message.success('创建成功')
+                  this.$message.success('修改成功')
                   this.query()
                 }
               })
