@@ -14,10 +14,7 @@
         <div class="operation-panel">
           <div>
             <el-form ref="queryForm" size="small" :inline="true" :model="probe">
-              <el-form-item label="模型编号" prop="code">
-                <el-input v-model="probe.code" placeholder="请输入关键字"/>
-              </el-form-item>
-              <el-form-item label="模型关键词" prop="keyword">
+              <el-form-item prop="keyword">
                 <el-input v-model="probe.keyword" placeholder="请输入关键字"/>
               </el-form-item>
               <el-form-item>
@@ -28,6 +25,20 @@
               </el-form-item>
               <el-form-item>
                 <el-button :disabled="list.length===0" @click="handleFilter">筛选</el-button>
+              </el-form-item>
+              <el-form-item>
+                <div class="pagination">
+                  <el-pagination
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="totalElements"
+                    :current-page="pageable.page + 1"
+                    :page-size="pageable.size"
+                    :page-sizes="[1,10, 15, 20, 50]"
+                    :pager-count="11"
+                    @current-change="handleCurrentChange"
+                    @size-change="handleSizeChange"
+                  />
+                </div>
               </el-form-item>
             </el-form>
           </div>
@@ -46,30 +57,32 @@
                   :key="attribute.id"
                   size="mini"
                   closable
+                  style="margin-right: 5px"
                   @close="handleClose(attribute.id)"
                 >{{ attribute.value }}
                 </el-tag>
               </el-form-item>
-              <el-form-item
+              <div
                 v-for="attribute in displayedAttributeViews"
                 :key="attribute.id"
-                :label="attribute.attributeName"
+                class="filter-class"
               >
+                <div class="filter-label">{{ attribute.attributeName }}</div>
                 <el-tag
                   v-for="value in attribute.values"
                   :key="value"
                   size="mini"
                   class="tag"
-                  @click="handleClickTag(attribute.id,value)"
+                  @click="handleClickTag(attribute.id,value,attribute.values)"
                 >{{ value }}
                 </el-tag>
-              </el-form-item>
+              </div>
             </el-form>
           </div>
         </div>
         <div v-if="probe.libraryId!=null">
           <div style="margin-bottom: 20px">
-            <el-table :data="list" size="small" border fit highlight-current-row height="100%">
+            <el-table :data="list" size="small" border fit highlight-current-row>
               <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
               <el-table-column prop="code" label="模型编号" width="100"/>
               <el-table-column prop="keyword" label="模型关键词" show-overflow-tooltip min-width="300"/>
@@ -86,36 +99,26 @@
               </el-table-column>
               <el-table-column fixed="right" label="操作" width="150">
                 <template v-slot="scope">
+                  <el-button type="text" size="small" @click="handleView(scope.row)">查看</el-button>
                   <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
-                  <el-popconfirm title="确定删除吗？" style="margin-left: 5px" @confirm="handleDelete(scope.row)">
+                  <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(scope.row)">
                     <el-button slot="reference" type="text" size="small">删除</el-button>
                   </el-popconfirm>
                 </template>
               </el-table-column>
             </el-table>
           </div>
-          <div class="pagination">
-            <el-pagination
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="totalElements"
-              :current-page="pageable.page + 1"
-              :page-size="pageable.size"
-              :page-sizes="[1, 5, 10, 20, 50, 100]"
-              @current-change="handleCurrentChange"
-              @size-change="handleSizeChange"
-            />
-          </div>
         </div>
       </div>
-      <el-dialog title="编辑模型" :visible.sync="dialogFormVisible" width="50%">
+      <el-dialog :title="operation+'模型'" :visible.sync="dialogFormVisible" width="50%">
         <el-form ref="modelAttrForm" size="small" :model="model" label-width="100px">
           <el-row>
             <el-col v-for="attribute in model.attributes" :key="attribute.id" :span="12">
               <el-form-item v-if="attribute.valueList==null||attribute.length===0" :label="attribute.attributeName">
-                <el-input v-model="attribute.value" class="property-input"/>
+                <el-input v-model="attribute.value" class="property-input" :disabled="operation==='查看'"/>
               </el-form-item>
               <el-form-item v-if="attribute.valueList!=null&&attribute.length!==0" :label="attribute.attributeName">
-                <el-select v-model="attribute.value" placeholder="请选择值">
+                <el-select v-model="attribute.value" placeholder="请选择值" :disabled="operation==='查看'">
                   <el-option
                     v-for="value in attribute.valueList"
                     :key="value"
@@ -129,8 +132,10 @@
           </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button size="small" @click="closeDialog('modelAttrForm')">取消</el-button>
-          <el-button size="small" type="primary" @click="submitModelForm('modelAttrForm')">确定</el-button>
+          <el-button size="small" @click="closeDialog('modelAttrForm')">关闭</el-button>
+          <el-button v-if="operation!=='查看'" size="small" type="primary" @click="submitModelForm('modelAttrForm')">
+            确定
+          </el-button>
         </div>
       </el-dialog>
     </div>
@@ -138,7 +143,7 @@
 </template>
 
 <script>
-import { deleteModel, editModelAttribute, searchModel } from '@/api/model'
+import { deleteModel, editModelAttribute, info, searchModel } from '@/api/model'
 import { queryTree, queryByLibrary } from '@/api/attribute'
 
 export default {
@@ -176,7 +181,8 @@ export default {
         code: null,
         keyword: null,
         attributes: []
-      }
+      },
+      operation: ''
     }
   },
   computed: {
@@ -186,8 +192,6 @@ export default {
       })
     },
     displayedAttributeViews: function() {
-      console.log(this.attributeViews)
-      console.log(this.displayedHeaders)
       return this.attributeViews.filter(e => {
         for (let i = 0; i < this.displayedHeaders.length; i++) {
           if (e.id === this.displayedHeaders[i].id) {
@@ -209,6 +213,7 @@ export default {
       this.queryHeaders()
       this.list = []
       this.query()
+      this.showFilters = false
     }
   },
   methods: {
@@ -232,13 +237,25 @@ export default {
         this.queryHeaders()
         this.list = []
         this.query()
+        this.showFilters = false
       }
     },
     handleClose(id) {
-      this.probe.attributes.splice(this.probe.attributes.indexOf(id), 1)
+      for (let i = 0; i < this.probe.attributes.length; i++) {
+        if (this.probe.attributes[i].id === id) {
+          this.probe.attributes.splice(i, 1)
+          break
+        }
+      }
       this.query()
     },
-    handleClickTag(attributeId, val) {
+    handleClickTag(attributeId, val, values) {
+      for (let i = 0; i < this.probe.attributes.length; i++) {
+        if (this.probe.attributes[i].id === attributeId) {
+          this.probe.attributes.splice(i, 1)
+          break
+        }
+      }
       this.probe.attributes.push({
         id: attributeId,
         value: val
@@ -281,9 +298,10 @@ export default {
     },
     resetQueryForm(formName) {
       this.$refs[formName].resetFields()
-      this.selectedOptions = []
       this.list = []
+      this.probe.attributes = []
       this.attributeViews = []
+      this.showFilters = false
     },
     handleCurrentChange(val) {
       this.pageable.page = val - 1
@@ -293,28 +311,39 @@ export default {
       this.pageable.size = val
       this.query()
     },
-    handleEdit(row) {
-      this.model.id = row.id
-      this.model.code = row.code
-      this.model.keyword = row.keyword
-      this.model.libraryId = row.libraryId
-      this.model.attributes = row.attributes
+    queryById(row) {
+      info(row.id)
+        .then(res => {
+          if (res.code === 0) {
+            this.model = res.data
+            for (let i = 0; i < this.headers.length; i++) {
+              const attribute = this.findAttribute(this.headers[i])
+              if (attribute != null) {
+                attribute.valueType = this.headers[i].valueType
+                attribute.valueList = this.headers[i].valueList
+              } else {
+                this.model.attributes.push({
+                  id: this.headers[i].id,
+                  attributeName: this.headers[i].attributeName,
+                  valueType: this.headers[i].valueType,
+                  valueList: this.headers[i].valueList
+                })
+              }
+            }
+          }
+        })
+    },
+    handleView(row) {
       this.queryHeaders()
-      for (let i = 0; i < this.headers.length; i++) {
-        const attribute = this.findAttribute(this.headers[i])
-        if (attribute != null) {
-          attribute.valueType = this.headers[i].valueType
-          attribute.valueList = this.headers[i].valueList
-        } else {
-          this.model.attributes.push({
-            id: this.headers[i].id,
-            attributeName: this.headers[i].attributeName,
-            valueType: this.headers[i].valueType,
-            valueList: this.headers[i].valueList
-          })
-        }
-      }
+      this.queryById(row)
       this.dialogFormVisible = true
+      this.operation = '查看'
+    },
+    handleEdit(row) {
+      this.queryHeaders()
+      this.queryById(row)
+      this.dialogFormVisible = true
+      this.operation = '编辑'
     },
     findAttribute(header) {
       for (let i = 0; i < this.model.attributes.length; i++) {
@@ -362,13 +391,11 @@ export default {
 
 <style scoped>
 .fixed-container {
-  height: 100vh;
   margin-top: -50px;
   padding-top: 50px;
 }
 
 .app-container {
-  height: 100%;
 }
 
 .app-container > div:nth-child(2) {
@@ -384,14 +411,12 @@ export default {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 .right-panel > div:nth-child(3) {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 .right-panel > div:nth-child(3) > div:nth-child(1) {
@@ -404,8 +429,7 @@ export default {
 }
 
 .pagination {
-  display: flex;
-  justify-content: flex-end;
+  margin-left: 50px;
 }
 
 .property-input {
@@ -418,5 +442,20 @@ export default {
 
 .tag:hover {
   cursor: pointer;
+}
+
+.filter-panel {
+  margin-bottom: 20px;
+}
+
+.filter-class {
+  font-size: 10px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.filter-label {
+  width: 80px;
 }
 </style>

@@ -65,7 +65,13 @@
               </el-form>
             </div>
             <div v-if="active===3">
-              <el-result icon="success" title="成功提示" sub-title="请根据提示进行操作">
+              <el-result v-if="isSuccess" icon="success" title="成功提示" sub-title="模型创建成功！请选择继续或返回模型界面">
+                <template slot="extra">
+                  <el-button type="primary" size="small" @click="once">继续</el-button>
+                  <el-button size="small" @click="back">返回</el-button>
+                </template>
+              </el-result>
+              <el-result v-if="!isSuccess" icon="error" title="错误提示" sub-title="模型创建失败！请选择继续或返回模型界面">
                 <template slot="extra">
                   <el-button type="primary" size="small" @click="once">继续</el-button>
                   <el-button size="small" @click="back">返回</el-button>
@@ -101,9 +107,9 @@ export default {
         })
     }
     return {
+      isSuccess: false,
       active: 0,
       nextButtonName: '下一步',
-      selectedOptions: [],
       options: [],
       defaultProps: {
         value: 'id',
@@ -187,6 +193,7 @@ export default {
           .then(res => {
             if (res.code === 0) {
               this.$message.success('创建成功')
+              this.isSuccess = true
               next(true)
             }
           })
