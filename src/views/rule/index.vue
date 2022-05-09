@@ -45,7 +45,7 @@
         </div>
       </div>
       <div style="margin-bottom: 20px">
-        <el-table :data="list" size="small" border fit highlight-current-row>
+        <el-table :data="list" size="small" stripe fit highlight-current-row height="100%">
           <el-table-column prop="ruleCode" label="规则编号" width="150"/>
           <el-table-column prop="businessType" label="业务类型" width="100" :formatter="formatBusinessType"/>
           <el-table-column prop="grade" label="严重等级" width="100" :formatter="formatGrade"/>
@@ -80,50 +80,26 @@
           @size-change="handleSizeChange"
         />
       </div>
-      <el-dialog :title="operation + '规则'" :visible.sync="dialogFormVisible" width="30%">
-        <el-form ref="ruleInfoForm" size="small" :model="ruleInfo" :rules="rules" label-width="100px">
-          <el-form-item label="规则编号" prop="ruleCode" class="property-input">
-            <el-input v-model="ruleInfo.ruleCode" maxlength="50" show-word-limit :disabled="operation==='查看'"/>
-          </el-form-item>
-          <el-form-item label="业务类型" prop="businessType">
-            <el-select v-model="ruleInfo.businessType" placeholder="请选择业务类型" :disabled="operation==='查看'">
-              <el-option
-                v-for="(businessType,key) in businessTypes"
-                :key="key"
-                :label="businessType"
-                :value="key"
-                @change="probe.businessType = key"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="严重等级" prop="grade">
-            <el-select v-model="ruleInfo.grade" placeholder="请选择严重等级" :disabled="operation==='查看'">
-              <el-option
-                v-for="(grade,key) in grades"
-                :key="key"
-                :label="grade"
-                :value="key"
-                @change="probe.grade = key"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="规则描述" prop="description" class="property-input">
-            <el-input v-model="ruleInfo.description" :disabled="operation==='查看'"/>
-          </el-form-item>
-          <el-form-item label="参数表达式" prop="parameterExp" class="property-input">
-            <el-input v-model="ruleInfo.parameterExp" :disabled="operation==='查看'"/>
-          </el-form-item>
-          <el-form-item label="条件表达式" prop="conditionExp" class="property-input">
-            <el-input v-model="ruleInfo.conditionExp" :disabled="operation==='查看'"/>
-          </el-form-item>
-          <el-form-item label="断定表达式" prop="predicateExp" class="property-input">
-            <el-input v-model="ruleInfo.predicateExp" :disabled="operation==='查看'"/>
-          </el-form-item>
-        </el-form>
+      <el-dialog title="查看规则" :visible.sync="dialogFormVisible">
+        <div style="padding-left: 50px;padding-right: 50px">
+          <el-descriptions ref="ruleInfoForm" :model="ruleInfo" :column="1">
+            <el-descriptions-item label="规则编号">{{ ruleInfo.ruleCode }}</el-descriptions-item>
+            <el-descriptions-item label="业务类型">{{ ruleInfo.businessType }}</el-descriptions-item>
+            <el-descriptions-item label="严重等级">{{ ruleInfo.grade }}</el-descriptions-item>
+            <el-descriptions-item label="规则描述">{{ ruleInfo.description }}</el-descriptions-item>
+            <el-descriptions-item label="参数表达式">
+              <el-tag size="small">{{ ruleInfo.parameterExp }}</el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item label="条件表达式">
+              <el-tag size="small"> {{ ruleInfo.conditionExp }}</el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item label="断定表达式">
+              <el-tag size="small"> {{ ruleInfo.predicateExp }}</el-tag>
+            </el-descriptions-item>
+          </el-descriptions>
+        </div>
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="closeDialog('ruleInfoForm')">关闭</el-button>
-          <el-button v-if="operation!=='查看'" size="small" type="primary" @click="submitCatalogForm('ruleInfoForm')">确定
-          </el-button>
         </div>
       </el-dialog>
     </div>
@@ -154,7 +130,6 @@ export default {
       totalElements: 0,
       totalPages: 0,
       dialogFormVisible: false,
-      operation: '',
       ruleInfo: {
         ruleCode: null,
         description: null,
@@ -230,7 +205,7 @@ export default {
       this.pageable.size = val
       this.query()
     },
-    queryByRuleCode(row) {
+    handleView(row) {
       queryRuleByRuleCode({ probe: row.ruleCode })
         .then(res => {
           if (res.code === 0) {
@@ -241,18 +216,28 @@ export default {
           }
         })
     },
-    handleView(row) {
-      this.queryByRuleCode(row)
-      this.operation = '查看'
-    },
     handleEdit(row) {
-      this.queryByRuleCode(row)
-      this.operation = '编辑'
+      queryRuleByRuleCode({ probe: row.ruleCode })
+        .then(res => {
+          if (res.code === 0) {
+            const ruleInfo = res.data
+            this.$router.push({
+              name: 'EditRule',
+              params: {
+                ruleInfo: ruleInfo,
+                operation: '编辑'
+              }
+            })
+          }
+        })
     },
     handleCreate() {
-      this.ruleInfo = {}
-      this.dialogFormVisible = true
-      this.operation = '创建'
+      this.$router.push({
+        name: 'EditRule',
+        params: {
+          operation: '创建'
+        }
+      })
     },
     switchEnabled(row) {
       switchRuleEnabled(row.businessType, row.ruleCode)
@@ -265,13 +250,6 @@ export default {
     closeDialog(formName) {
       this.dialogFormVisible = false
       this.$refs[formName].resetFields()
-    },
-    submitCatalogForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.dialogFormVisible = false
-        }
-      })
     }
   }
 }
@@ -302,9 +280,5 @@ export default {
 .pagination {
   display: flex;
   justify-content: flex-end;
-}
-
-.property-input {
-  width: 90%;
 }
 </style>

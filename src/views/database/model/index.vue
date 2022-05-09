@@ -82,7 +82,7 @@
         </div>
         <div v-if="probe.libraryId!=null">
           <div style="margin-bottom: 20px">
-            <el-table :data="list" size="small" border fit highlight-current-row>
+            <el-table :data="list" size="small" stripe fit highlight-current-row>
               <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
               <el-table-column prop="code" label="模型编号" width="100"/>
               <el-table-column prop="keyword" label="模型关键词" show-overflow-tooltip min-width="300"/>

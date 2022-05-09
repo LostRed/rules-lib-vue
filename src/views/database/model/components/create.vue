@@ -2,11 +2,9 @@
   <div class="fixed-container">
     <div class="app-container">
       <div class="operation-panel">
-        <div>
-          <el-button size="small" @click="back">返回</el-button>
-        </div>
+        <el-page-header content="创建模型" @back="back"/>
       </div>
-      <el-row type="flex" justify="center">
+      <el-row type="flex" justify="center" style="margin-top: 50px">
         <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="12">
           <div class="top-panel">
             <el-steps :active="active" align-center>
@@ -36,11 +34,35 @@
               <el-form ref="modelAttrForm" size="small" :model="model" label-width="100px">
                 <el-row>
                   <el-col v-for="attribute in model.attributes" :key="attribute.id" :span="12">
-                    <el-form-item v-if="attribute.valueType==='ONE'" :label="attribute.attributeName">
+                    <el-form-item
+                      v-if="attribute.valueList==null||attribute.length===0"
+                      :label="attribute.attributeName"
+                    >
                       <el-input v-model="attribute.value" class="property-input"/>
                     </el-form-item>
-                    <el-form-item v-if="attribute.valueType==='MANY'" :label="attribute.attributeName">
-                      <el-select v-model="attribute.value" placeholder="请选择值">
+                    <el-form-item
+                      v-if="attribute.valueList!=null&&attribute.length!==0"
+                      :label="attribute.attributeName"
+                    >
+                      <el-select
+                        v-if="attribute.valueType==='ONE'"
+                        v-model="attribute.value"
+                        placeholder="请选择值"
+                      >
+                        <el-option
+                          v-for="value in attribute.valueList"
+                          :key="value"
+                          :label="value"
+                          :value="value"
+                          @change="attribute.value=value"
+                        />
+                      </el-select>
+                      <el-select
+                        v-if="attribute.valueType==='MANY'"
+                        v-model="attribute.value"
+                        multiple
+                        placeholder="请选择值"
+                      >
                         <el-option
                           v-for="value in attribute.valueList"
                           :key="value"

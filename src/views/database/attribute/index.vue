@@ -44,7 +44,7 @@
           </div>
         </div>
         <div style="margin-bottom: 20px">
-          <el-table :data="list" size="small" border fit highlight-current-row height="100%">
+          <el-table :data="list" size="small" stripe fit highlight-current-row height="100%">
             <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
             <el-table-column prop="displayed" label="是否展示" width="100">
               <template v-slot="scope">
@@ -88,7 +88,7 @@
           <el-form-item label="值类型" prop="valueType" class="property-input">
             <el-select v-model="attribute.valueType">
               <el-option label="单值" value="ONE"/>
-              <el-option label="多值" value="MANY"/>
+              <el-option label="多值" value="MANY" :disabled="true"/>
             </el-select>
           </el-form-item>
           <el-form-item label="值可选列表" prop="valueList" class="property-input">
@@ -102,7 +102,13 @@
               <el-option v-for="value in attribute.valueList" :key="value" :label="value" :value="value"/>
             </el-select>
           </el-form-item>
-          <el-form-item label="顺序" prop="order" class="property-input">
+          <el-form-item prop="order" class="property-input">
+            <template slot="label">
+              <span>顺序</span>
+              <el-tooltip class="item" effect="dark" content="模型列表中展示的顺序，同时只有前十的属性才能在模型检索中筛选">
+                <i class="el-icon-question"/>
+              </el-tooltip>
+            </template>
             <el-input-number v-model="attribute.order" :min="0" :max="100"/>
           </el-form-item>
           <el-form-item label="是否展示" prop="displayed" class="property-input">
@@ -110,7 +116,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button size="small" @click="closeDialog('attributeForm')">取消</el-button>
+          <el-button size="small" @click="closeDialog('attributeForm')">关闭</el-button>
           <el-button size="small" type="primary" @click="submitLibraryForm('attributeForm')">确定</el-button>
         </div>
       </el-dialog>

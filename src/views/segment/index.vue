@@ -4,10 +4,18 @@
       <div class="operation-panel">
         <div>
           <el-form ref="queryForm" size="small" :inline="true" :model="probe">
-            <el-form-item label="目录名称" prop="catalogName">
-              <el-input v-model="probe.catalogName" placeholder="请输入关键字"/>
+            <el-form-item label="片段类型" prop="segmentType">
+              <el-select v-model="probe.segmentType" placeholder="请选择业务类型">
+                <el-option
+                  v-for="(segmentType,key) in segmentTypes"
+                  :key="key"
+                  :label="segmentType"
+                  :value="key"
+                  @change="probe.segmentType = key"
+                />
+              </el-select>
             </el-form-item>
-            <el-form-item label="目录描述" prop="description">
+            <el-form-item label="片段描述" prop="description">
               <el-input v-model="probe.description" placeholder="请输入关键字"/>
             </el-form-item>
             <el-form-item>
@@ -23,13 +31,18 @@
         </div>
       </div>
       <div style="margin-bottom: 20px">
-        <el-table :data="list" size="small" border fit highlight-current-row>
+        <el-table :data="list" size="small" stripe fit highlight-current-row height="100%">
           <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
-          <el-table-column prop="catalogName" label="目录名称" width="300"/>
-          <el-table-column prop="description" label="目录描述" show-overflow-tooltip/>
-          <el-table-column fixed="right" label="操作" width="150">
+          <el-table-column prop="segment" label="片段" width="300">
             <template v-slot="scope">
-              <el-button type="text" size="small" @click="handleEnter(scope.row)">进入</el-button>
+              <el-tag size="mini">{{ scope.row.segment }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="description" label="片段描述" width="100"/>
+          <el-table-column prop="segmentType" label="片段类型" width="100" :formatter="formatSegmentType"/>
+          <el-table-column prop="tips" label="提示" show-overflow-tooltip/>
+          <el-table-column fixed="right" label="操作" width="100">
+            <template v-slot="scope">
               <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
               <el-button type="text" size="small">删除</el-button>
             </template>
@@ -47,18 +60,32 @@
           @size-change="handleSizeChange"
         />
       </div>
-      <el-dialog :title="operation + '目录'" :visible.sync="dialogFormVisible" width="30%">
-        <el-form ref="catalogForm" size="small" :model="catalog" :rules="rules" label-width="100px">
-          <el-form-item label="目录名称" prop="catalogName" class="property-input">
-            <el-input v-model="catalog.catalogName" maxlength="50" show-word-limit/>
+      <el-dialog :title="operation + '片段'" :visible.sync="dialogFormVisible" width="30%">
+        <el-form ref="segmentInfoForm" size="small" :model="segmentInfo" :rules="rules" label-width="100px">
+          <el-form-item label="片段" prop="segment" class="property-input">
+            <el-input v-model="segmentInfo.segment"/>
           </el-form-item>
-          <el-form-item label="目录描述" prop="description" class="property-input">
-            <el-input v-model="catalog.description" maxlength="50" show-word-limit/>
+          <el-form-item label="片段描述" prop="description" class="property-input">
+            <el-input v-model="segmentInfo.description"/>
+          </el-form-item>
+          <el-form-item label="片段类型" prop="segmentType">
+            <el-select v-model="segmentInfo.segmentType" placeholder="请选择片段类型">
+              <el-option
+                v-for="(segmentType,key) in segmentTypes"
+                :key="key"
+                :label="segmentType"
+                :value="key"
+                @change="segmentInfo.segmentType = key"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="片段提示" prop="tips" class="property-input">
+            <el-input v-model="segmentInfo.tips"/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button size="small" @click="closeDialog('catalogForm')">取消</el-button>
-          <el-button size="small" type="primary" @click="submitCatalogForm('catalogForm')">确定</el-button>
+          <el-button size="small" @click="closeDialog('segmentInfoForm')">关闭</el-button>
+          <el-button size="small" type="primary" @click="submitSegmentInfoForm('segmentInfoForm')">确定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -66,17 +93,21 @@
 </template>
 
 <script>
-import { createCatalog, editCatalog, queryCatalog } from '@/api/catalog'
+import { queryEnum } from '@/api/system'
+import { createSegment, editSegment, querySegment } from '@/api/segment'
 
 export default {
-  name: 'Catalog',
+  name: 'Segment',
   data() {
     return {
+      segmentTypes: [],
       list: [],
       probe: {
         id: null,
-        catalogName: null,
-        description: null
+        segment: null,
+        segmentType: null,
+        description: null,
+        tips: null
       },
       pageable: {
         page: 0,
@@ -86,35 +117,45 @@ export default {
       totalPages: 0,
       dialogFormVisible: false,
       operation: '',
-      catalog: {
-        catalogName: null,
-        description: null
+      segmentInfo: {
+        segment: null,
+        segmentType: null,
+        description: null,
+        tips: null
       },
       rules: {
-        catalogName: [
-          { required: true, message: '请输入目录名称', trigger: 'blur' },
-          { min: 1, max: 50, message: '长度在1到50个字符', trigger: 'blur' }
+        segment: [
+          { required: true, message: '请输入片段', trigger: 'blur' }
+        ],
+        segmentType: [
+          { required: true, message: '请输入片段类型', trigger: 'blur' }
         ],
         description: [
-          { required: true, message: '请输入目录描述', trigger: 'blur' },
-          { min: 1, max: 50, message: '长度在1到50个字符', trigger: 'blur' }
+          { required: true, message: '请输入片段描述', trigger: 'blur' }
         ]
       }
     }
   },
   created() {
+    queryEnum({ probe: 'segmentType' })
+      .then(res => {
+        this.segmentTypes = res.data
+      })
     this.query()
   },
   methods: {
     indexMethod(index) {
       return index + 1
     },
+    formatSegmentType(row, column, cellValue, index) {
+      return this.segmentTypes[cellValue]
+    },
     query() {
       const queryParam = {
         probe: this.probe,
         pageable: this.pageable
       }
-      queryCatalog(queryParam)
+      querySegment(queryParam)
         .then(res => {
           if (res.code === 0) {
             this.list = res.data.content
@@ -137,24 +178,17 @@ export default {
       this.pageable.size = val
       this.query()
     },
-    handleEnter(row) {
-      this.$message('当前目录: ' + row.catalogName)
-      this.$router.push({
-        name: 'Library',
-        params: {
-          catalogId: row.id
-        }
-      })
-    },
     handleEdit(row) {
-      this.catalog.id = row.id
-      this.catalog.catalogName = row.catalogName
-      this.catalog.description = row.description
+      this.segmentInfo.id = row.id
+      this.segmentInfo.segment = row.segment
+      this.segmentInfo.segmentType = row.segmentType
+      this.segmentInfo.description = row.description
+      this.segmentInfo.tips = row.tips
       this.dialogFormVisible = true
       this.operation = '编辑'
     },
     handleCreate() {
-      this.catalog = {}
+      this.segmentInfo = {}
       this.dialogFormVisible = true
       this.operation = '创建'
     },
@@ -162,11 +196,11 @@ export default {
       this.dialogFormVisible = false
       this.$refs[formName].resetFields()
     },
-    submitCatalogForm(formName) {
+    submitSegmentInfoForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.operation === '编辑') {
-            editCatalog(this.catalog)
+            editSegment(this.segmentInfo)
               .then(res => {
                 if (res.code === 0) {
                   this.$message.success('修改成功')
@@ -174,7 +208,7 @@ export default {
                 }
               })
           } else {
-            createCatalog(this.catalog)
+            createSegment(this.segmentInfo)
               .then(res => {
                 if (res.code === 0) {
                   this.$message.success('创建成功')

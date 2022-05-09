@@ -54,134 +54,6 @@ export const constantRoutes = [
       meta: { title: '仪表盘', icon: 'dashboard' }
     }]
   },
-  //
-  // {
-  //   path: '/example',
-  //   component: Layout,
-  //   redirect: '/example/table',
-  //   name: 'Example',
-  //   meta: { title: 'Example', icon: 'el-icon-s-help' },
-  //   children: [
-  //     {
-  //       path: 'table',
-  //       name: 'Table',
-  //       component: () => import('@/views/table/index'),
-  //       meta: { title: 'Table', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'tree',
-  //       name: 'Tree',
-  //       component: () => import('@/views/tree/index'),
-  //       meta: { title: 'Tree', icon: 'tree' }
-  //     }
-  //   ]
-  // },
-  //
-  // {
-  //   path: '/form',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Form',
-  //       component: () => import('@/views/form/index'),
-  //       meta: { title: 'Form', icon: 'form' }
-  //     }
-  //   ]
-  // },
-  //
-  // {
-  //   path: '/nested',
-  //   component: Layout,
-  //   redirect: '/nested/menu1',
-  //   name: 'Nested',
-  //   meta: {
-  //     title: 'Nested',
-  //     icon: 'nested'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'menu1',
-  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
-  //       name: 'Menu1',
-  //       meta: { title: 'Menu1' },
-  //       children: [
-  //         {
-  //           path: 'menu1-1',
-  //           component: () => import('@/views/nested/menu1/menu1-1'),
-  //           name: 'Menu1-1',
-  //           meta: { title: 'Menu1-1' }
-  //         },
-  //         {
-  //           path: 'menu1-2',
-  //           component: () => import('@/views/nested/menu1/menu1-2'),
-  //           name: 'Menu1-2',
-  //           meta: { title: 'Menu1-2' },
-  //           children: [
-  //             {
-  //               path: 'menu1-2-1',
-  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-  //               name: 'Menu1-2-1',
-  //               meta: { title: 'Menu1-2-1' }
-  //             },
-  //             {
-  //               path: 'menu1-2-2',
-  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-  //               name: 'Menu1-2-2',
-  //               meta: { title: 'Menu1-2-2' }
-  //             }
-  //           ]
-  //         },
-  //         {
-  //           path: 'menu1-3',
-  //           component: () => import('@/views/nested/menu1/menu1-3'),
-  //           name: 'Menu1-3',
-  //           meta: { title: 'Menu1-3' }
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       path: 'menu2',
-  //       component: () => import('@/views/nested/menu2/index'),
-  //       name: 'Menu2',
-  //       meta: { title: 'menu2' }
-  //     }
-  //   ]
-  // },
-  //
-  // {
-  //   path: 'external-link',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-  //       meta: { title: 'External Link', icon: 'link' }
-  //     }
-  //   ]
-  // },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true },
-
-  {
-    path: '/catalog',
-    component: Layout,
-    redirect: '/catalog/index', // 重定向地址，在面包屑中点击会重定向去的地址
-    hidden: false, // 不在侧边栏显示
-    alwaysShow: false, // 一直显示根路由
-    meta: { roles: ['admin', 'editor'] }, // 你可以在根路由设置权限，这样它下面所有的子路由都继承了这个权限
-    children: [{
-      path: 'index',
-      component: () => import('@/views/catalog/index'),
-      name: 'Catalog',
-      meta: {
-        title: '目录',
-        icon: 'tree', // 图标
-        roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
-        noCache: true // 不会被 <keep-alive> 缓存
-      }
-    }]
-  },
 
   {
     path: '/database',
@@ -189,14 +61,25 @@ export const constantRoutes = [
     redirect: '/database/library', // 重定向地址，在面包屑中点击会重定向去的地址
     hidden: false, // 不在侧边栏显示
     alwaysShow: false, // 一直显示根路由
-    meta: { title: '数据库', icon: 'el-icon-s-help', roles: ['admin', 'editor'] },
+    meta: { title: '知识库', icon: 'el-icon-coin', roles: ['admin', 'editor'] },
     children: [{
+      path: 'catalog',
+      component: () => import('@/views/database/catalog/index'),
+      name: 'Catalog',
+      meta: {
+        title: '目录',
+        icon: 'el-icon-collection', // 图标
+        roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
+        noCache: true // 不会被 <keep-alive> 缓存
+      }
+    },
+    {
       path: 'library',
       component: () => import('@/views/database/library/index'),
       name: 'Library',
       meta: {
         title: '库',
-        icon: 'tree', // 图标
+        icon: 'el-icon-notebook-1', // 图标
         roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
         noCache: true // 不会被 <keep-alive> 缓存
       }
@@ -207,44 +90,35 @@ export const constantRoutes = [
       name: 'Attribute',
       meta: {
         title: '属性',
-        icon: 'table', // 图标
+        icon: 'el-icon-notebook-2', // 图标
+        roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
+        noCache: true // 不会被 <keep-alive> 缓存
+      }
+    },
+    {
+      path: 'model',
+      component: () => import('@/views/database/model/index'),
+      name: 'Model',
+      meta: {
+        title: '模型',
+        icon: 'el-icon-s-data', // 图标
+        roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
+        noCache: true // 不会被 <keep-alive> 缓存
+      }
+    },
+    {
+      path: 'model/create',
+      component: () => import('@/views/database/model/components/create'),
+      name: 'CreateModel',
+      hidden: true,
+      meta: {
+        title: '创建模型',
         roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
         noCache: true // 不会被 <keep-alive> 缓存
       }
     }]
   },
 
-  {
-    path: '/model',
-    component: Layout,
-    redirect: '/model/index', // 重定向地址，在面包屑中点击会重定向去的地址
-    hidden: false, // 不在侧边栏显示
-    alwaysShow: false, // 一直显示根路由
-    meta: { roles: ['admin', 'editor'] }, // 你可以在根路由设置权限，这样它下面所有的子路由都继承了这个权限
-    children: [{
-      path: 'index',
-      component: () => import('@/views/model/index'),
-      name: 'Model',
-      meta: {
-        title: '模型',
-        icon: 'table', // 图标
-        roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
-        noCache: true // 不会被 <keep-alive> 缓存
-      }
-    },
-    {
-      path: 'edit',
-      component: () => import('@/views/model/components/create'),
-      name: 'CreateModel',
-      hidden: true,
-      meta: {
-        title: '创建模型',
-        icon: 'table', // 图标
-        roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
-        noCache: true // 不会被 <keep-alive> 缓存
-      }
-    }]
-  },
   {
     path: '/rule',
     component: Layout,
@@ -258,12 +132,57 @@ export const constantRoutes = [
       name: 'Rule',
       meta: {
         title: '规则',
-        icon: 'table', // 图标
+        icon: 'el-icon-s-operation', // 图标
+        roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
+        noCache: true // 不会被 <keep-alive> 缓存
+      }
+    },
+    {
+      path: 'edit',
+      component: () => import('@/views/rule/components/edit'),
+      name: 'EditRule',
+      hidden: true,
+      meta: {
+        title: '规则',
+        roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
+        noCache: true // 不会被 <keep-alive> 缓存
+      }
+    },
+    {
+      path: 'expression',
+      component: () => import('@/views/rule/components/expression'),
+      name: 'Expression',
+      hidden: true,
+      meta: {
+        title: '表达式',
         roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
         noCache: true // 不会被 <keep-alive> 缓存
       }
     }]
-  }
+  },
+
+  {
+    path: '/segment.js',
+    component: Layout,
+    redirect: '/segment/index', // 重定向地址，在面包屑中点击会重定向去的地址
+    hidden: false, // 不在侧边栏显示
+    alwaysShow: false, // 一直显示根路由
+    meta: { roles: ['admin', 'editor'] }, // 你可以在根路由设置权限，这样它下面所有的子路由都继承了这个权限
+    children: [{
+      path: 'index',
+      component: () => import('@/views/segment/index'),
+      name: 'Segment',
+      meta: {
+        title: '片段',
+        icon: 'el-icon-price-tag', // 图标
+        roles: ['admin', 'editor'], // 或者你可以给每一个子路由设置自己的权限
+        noCache: true // 不会被 <keep-alive> 缓存
+      }
+    }]
+  },
+
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
