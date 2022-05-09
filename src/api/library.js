@@ -39,3 +39,10 @@ export function existsLibrary(probe) {
     data: probe
   })
 }
+
+export function queryModelLibrary() {
+  return api({
+    url: '/modelLibrary/query',
+    method: 'get'
+  })
+}

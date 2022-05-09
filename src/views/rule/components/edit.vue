@@ -7,7 +7,7 @@
       <el-row type="flex" justify="center" style="margin-top: 50px">
         <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="12">
           <el-form ref="ruleInfoForm" size="small" :model="ruleInfo" :rules="rules" label-width="120px">
-            <el-form-item label="规则编号" prop="ruleCode" class="property-input">
+            <el-form-item label="规则编号" prop="ruleCode">
               <el-input v-model="ruleInfo.ruleCode" maxlength="50" show-word-limit/>
             </el-form-item>
             <el-form-item label="业务类型" prop="businessType">
@@ -32,37 +32,37 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="规则描述" prop="description" class="property-input">
+            <el-form-item label="规则描述" prop="description">
               <el-input v-model="ruleInfo.description"/>
             </el-form-item>
-            <el-form-item prop="parameterExp" class="property-input">
+            <el-form-item prop="parameterExp">
               <template slot="label">
                 <span>参数表达式</span>
                 <el-tooltip class="item" effect="dark" content="领域对象内的参数">
                   <i class="el-icon-question"/>
                 </el-tooltip>
               </template>
-              <el-button type="text" @click="handleExp">生成表达式</el-button>
+              <el-button type="text" @click="handleExp('parameter')">生成表达式</el-button>
               <el-input v-model="ruleInfo.parameterExp" type="textarea"/>
             </el-form-item>
-            <el-form-item prop="conditionExp" class="property-input">
+            <el-form-item prop="conditionExp">
               <template slot="label">
                 <span>条件表达式</span>
                 <el-tooltip class="item" effect="dark" content="规则是否执行的条件">
                   <i class="el-icon-question"/>
                 </el-tooltip>
               </template>
-              <el-button type="text" @click="handleExp">生成表达式</el-button>
+              <el-button type="text" @click="handleExp('condition')">生成表达式</el-button>
               <el-input v-model="ruleInfo.conditionExp" type="textarea"/>
             </el-form-item>
-            <el-form-item prop="predicateExp" class="property-input">
+            <el-form-item prop="predicateExp">
               <template slot="label">
                 <span>断定表达式</span>
                 <el-tooltip class="item" effect="dark" content="判断参数是否符合预期">
                   <i class="el-icon-question"/>
                 </el-tooltip>
               </template>
-              <el-button type="text" @click="handleExp">生成表达式</el-button>
+              <el-button type="text" @click="handleExp('predicate')">生成表达式</el-button>
               <el-input v-model="ruleInfo.predicateExp" type="textarea"/>
             </el-form-item>
             <el-form-item>
@@ -133,6 +133,18 @@ export default {
       this.ruleInfo = this.$route.params.ruleInfo
     }
     this.operation = this.$route.params.operation == null ? '' : this.$route.params.operation
+    this.type = this.$route.params.type
+    switch (this.type) {
+      case 'parameter':
+        this.ruleInfo.parameterExp = this.$route.params.expression
+        break
+      case 'condition':
+        this.ruleInfo.conditionExp = this.$route.params.expression
+        break
+      case 'predicate':
+        this.ruleInfo.predicateExp = this.$route.params.expression
+        break
+    }
   },
   methods: {
     back() {
@@ -140,10 +152,15 @@ export default {
         name: 'Rule'
       })
     },
-    handleExp() {
+    handleExp(type) {
       this.$router.push({
-        name: 'Expression'
+        name: 'Expression',
+        params: {
+          type: type
+        }
       })
+    },
+    onSubmit() {
     }
   }
 }
