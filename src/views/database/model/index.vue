@@ -143,7 +143,7 @@
 </template>
 
 <script>
-import { deleteModel, editModelAttribute, info, searchModel } from '@/api/model'
+import { deleteModel, editModel, info, searchModel } from '@/api/model'
 import { queryTree, queryByLibrary } from '@/api/attribute'
 
 export default {
@@ -376,7 +376,7 @@ export default {
     submitModelForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          editModelAttribute(this.model)
+          editModel(this.model)
             .then(() => {
               this.$message.success('修改成功')
               this.query()

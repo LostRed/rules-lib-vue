@@ -7,3 +7,11 @@ export function queryEnum(queryParam) {
     data: queryParam
   })
 }
+
+export function parseExpression(probe) {
+  return api({
+    url: '/system/parseExpression',
+    method: 'post',
+    data: probe
+  })
+}

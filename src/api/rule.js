@@ -16,6 +16,14 @@ export function queryRuleByRuleCode(queryParam) {
   })
 }
 
+export function createRule(ruleInfo) {
+  return api({
+    url: '/rule/create',
+    method: 'post',
+    data: ruleInfo
+  })
+}
+
 export function switchRuleEnabled(businessType, ruleCode) {
   return api({
     url: '/rulesEngine/switchRuleEnabled',
@@ -24,5 +32,12 @@ export function switchRuleEnabled(businessType, ruleCode) {
       businessType,
       ruleCode
     }
+  })
+}
+
+export function getAllEngineBusinessType() {
+  return api({
+    url: '/rulesEngine/getAllEngineBusinessType',
+    method: 'get'
   })
 }

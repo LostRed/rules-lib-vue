@@ -35,6 +35,9 @@
             <el-form-item label="规则描述" prop="description">
               <el-input v-model="ruleInfo.description"/>
             </el-form-item>
+            <el-form-item label="是否必须启用">
+              <el-switch v-model="ruleInfo.required"/>
+            </el-form-item>
             <el-form-item prop="parameterExp">
               <template slot="label">
                 <span>参数表达式</span>
@@ -42,8 +45,8 @@
                   <i class="el-icon-question"/>
                 </el-tooltip>
               </template>
-              <el-button type="text" @click="handleExp('parameter')">生成表达式</el-button>
-              <el-input v-model="ruleInfo.parameterExp" type="textarea"/>
+              <el-button type="text" @click="handleExp('参数表达式')">生成表达式</el-button>
+              <el-input v-model="ruleInfo.parameterExp" disabled/>
             </el-form-item>
             <el-form-item prop="conditionExp">
               <template slot="label">
@@ -52,8 +55,8 @@
                   <i class="el-icon-question"/>
                 </el-tooltip>
               </template>
-              <el-button type="text" @click="handleExp('condition')">生成表达式</el-button>
-              <el-input v-model="ruleInfo.conditionExp" type="textarea"/>
+              <el-button type="text" @click="handleExp('条件表达式')">生成表达式</el-button>
+              <el-input v-model="ruleInfo.conditionExp" disabled/>
             </el-form-item>
             <el-form-item prop="predicateExp">
               <template slot="label">
@@ -62,27 +65,39 @@
                   <i class="el-icon-question"/>
                 </el-tooltip>
               </template>
-              <el-button type="text" @click="handleExp('predicate')">生成表达式</el-button>
-              <el-input v-model="ruleInfo.predicateExp" type="textarea"/>
+              <el-button type="text" @click="handleExp('断定表达式')">生成表达式</el-button>
+              <el-input v-model="ruleInfo.predicateExp" disabled/>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="onSubmit">提交</el-button>
+              <el-button type="primary" @click="onSubmit('ruleInfoForm')">提交</el-button>
             </el-form-item>
           </el-form>
         </el-col>
       </el-row>
     </div>
+    <el-drawer
+      :title="expressionType"
+      :visible.sync="drawer"
+    >
+      <expression @generation="generateExpression"/>
+    </el-drawer>
   </div>
 </template>
 
 <script>
 
-import { queryEnum } from '@/api/system'
+import Expression from '@/views/rule/components/expression'
+import { createRule, getAllEngineBusinessType } from '@/api/rule'
 
 export default {
   name: 'EditRule',
+  components: {
+    Expression
+  },
   data() {
     return {
+      expressionType: '',
+      drawer: false,
       operation: '',
       grades: {
         ILLEGAL: '违规',
@@ -93,7 +108,7 @@ export default {
         ruleCode: null,
         description: null,
         businessType: null,
-        grade: '违规',
+        grade: 'ILLEGAL',
         order: 0,
         required: false,
         enabled: false,
@@ -125,7 +140,7 @@ export default {
     }
   },
   created() {
-    queryEnum({ probe: 'businessType' })
+    getAllEngineBusinessType()
       .then(res => {
         this.businessTypes = res.data
       })
@@ -133,18 +148,6 @@ export default {
       this.ruleInfo = this.$route.params.ruleInfo
     }
     this.operation = this.$route.params.operation == null ? '' : this.$route.params.operation
-    this.type = this.$route.params.type
-    switch (this.type) {
-      case 'parameter':
-        this.ruleInfo.parameterExp = this.$route.params.expression
-        break
-      case 'condition':
-        this.ruleInfo.conditionExp = this.$route.params.expression
-        break
-      case 'predicate':
-        this.ruleInfo.predicateExp = this.$route.params.expression
-        break
-    }
   },
   methods: {
     back() {
@@ -153,14 +156,39 @@ export default {
       })
     },
     handleExp(type) {
-      this.$router.push({
-        name: 'Expression',
-        params: {
-          type: type
+      this.expressionType = type
+      this.drawer = true
+    },
+    generateExpression(val) {
+      switch (this.expressionType) {
+        case '参数表达式':
+          this.ruleInfo.parameterExp = val
+          break
+        case '条件表达式':
+          this.ruleInfo.conditionExp = val
+          break
+        case '断定表达式':
+          this.ruleInfo.predicateExp = val
+          break
+      }
+      this.drawer = false
+    },
+    onSubmit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (this.operation === '创建') {
+            createRule(this.ruleInfo)
+              .then(res => {
+                if (res.code === 0) {
+                  this.$message.success('创建成功')
+                  this.$router.push({
+                    name: 'Rule'
+                  })
+                }
+              })
+          }
         }
       })
-    },
-    onSubmit() {
     }
   }
 }

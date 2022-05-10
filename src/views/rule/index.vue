@@ -64,7 +64,7 @@
           <el-table-column fixed="right" label="操作" width="100">
             <template v-slot="scope">
               <el-button type="text" size="small" @click="handleView(scope.row)">查看</el-button>
-              <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
+<!--              <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>-->
             </template>
           </el-table-column>
         </el-table>
@@ -185,7 +185,6 @@ export default {
         .then(res => {
           if (res.code === 0) {
             this.list = res.data.content
-            console.log(this.list)
             this.totalElements = res.data.totalElements
             this.totalPages = res.data.totalPages
           }
@@ -245,6 +244,9 @@ export default {
           if (res.code === 0) {
             this.$message.success('操作成功')
           }
+        })
+        .catch(() => {
+          this.query()
         })
     },
     closeDialog(formName) {

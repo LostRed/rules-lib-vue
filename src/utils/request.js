@@ -90,7 +90,14 @@ service.interceptors.response.use(
 api.interceptors.response.use(
   response => {
     const res = response.data
-    if (res.code !== 0) {
+    if (res.code === -1) {
+      Message({
+        message: res.message || 'Waring',
+        type: 'warning',
+        duration: 5 * 1000
+      })
+      return Promise.reject(new Error(res.message || 'Warning'))
+    } else if (res.code !== 0) {
       let message = res.message || 'Error'
       if (res.code === -2) {
         const map = res.data

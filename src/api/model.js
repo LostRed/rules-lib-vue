@@ -26,9 +26,9 @@ export function createModel(model) {
   })
 }
 
-export function editModelAttribute(model) {
+export function editModel(model) {
   return api({
-    url: '/model/editModelAttribute',
+    url: '/model/editModel',
     method: 'post',
     data: model
   })
