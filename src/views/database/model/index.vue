@@ -14,7 +14,10 @@
         <div class="operation-panel">
           <div>
             <el-form ref="queryForm" size="small" :inline="true" :model="probe">
-              <el-form-item prop="keyword">
+              <el-form-item label="模型编号" prop="code">
+                <el-input v-model="probe.code" placeholder="请输入关键字"/>
+              </el-form-item>
+              <el-form-item label="模型关键词" prop="keyword">
                 <el-input v-model="probe.keyword" placeholder="请输入关键字"/>
               </el-form-item>
               <el-form-item>
@@ -80,38 +83,9 @@
           </div>
         </div>
         <div v-if="probe.libraryId!=null">
-          <div class="infinite-list-wrapper">
-            <!--            <el-table :data="list" size="small" stripe fit highlight-current-row>-->
-            <!--              <template slot="empty">-->
-            <!--                <el-empty description="暂无数据"/>-->
-            <!--              </template>-->
-            <!--              <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>-->
-            <!--              <el-table-column prop="code" label="模型编号" width="100"/>-->
-            <!--              <el-table-column prop="keyword" label="模型关键词" show-overflow-tooltip min-width="300"/>-->
-            <!--              <el-table-column-->
-            <!--                v-for="attribute in displayedHeaders"-->
-            <!--                :key="attribute.id"-->
-            <!--                :label="attribute.attributeName"-->
-            <!--                show-overflow-tooltip-->
-            <!--                min-width="100"-->
-            <!--              >-->
-            <!--                <template v-slot="scope">-->
-            <!--                  <span>{{ scope.row.attributeMap.get(attribute.id) }}</span>-->
-            <!--                </template>-->
-            <!--              </el-table-column>-->
-            <!--              <el-table-column fixed="right" label="操作" width="120">-->
-            <!--                <template v-slot="scope">-->
-            <!--                  <el-button type="text" size="small" @click="handleView(scope.row)">查看</el-button>-->
-            <!--                  <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>-->
-            <!--                  <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(scope.row)">-->
-            <!--                    <el-button slot="reference" type="text" size="small">删除</el-button>-->
-            <!--                  </el-popconfirm>-->
-            <!--                </template>-->
-            <!--              </el-table-column>-->
-            <!--            </el-table>-->
-
-            <el-row v-infinite-scroll="load" :gutter="20" :infinite-scroll-disabled="disabled">
-              <el-col v-for="item in list" :key="item.id" :span="24">
+          <el-row :gutter="20">
+            <el-col v-for="item in list" :key="item.id" :span="6">
+              <div>
                 <el-card class="box-card">
                   <div slot="header" class="title">
                     <div @click="handleView(item)">
@@ -128,16 +102,15 @@
                     {{ item.keyword }}
                   </div>
                 </el-card>
-              </el-col>
-            </el-row>
-            <p v-if="loading">加载中...</p>
-            <p v-if="noMore">没有更多了</p>
-          </div>
+              </div>
+            </el-col>
+          </el-row>
+
         </div>
       </div>
       <el-dialog :title="operation+'模型'" :visible.sync="dialogFormVisible" width="50%">
         <el-form ref="modelAttrForm" size="small" :model="model" label-width="100px">
-          <el-row>
+          <el-row class="row">
             <el-col v-for="attribute in model.attributes" :key="attribute.id" :span="12">
               <el-form-item v-if="attribute.valueList==null||attribute.length===0" :label="attribute.attributeName">
                 <el-input v-model="attribute.value" class="property-input" :disabled="operation==='查看'"/>
@@ -196,7 +169,7 @@ export default {
       },
       pageable: {
         page: 0,
-        size: 3
+        size: 16
       },
       totalElements: 0,
       totalPages: 0,
@@ -307,7 +280,6 @@ export default {
             this.attributeViews = res.data.attributeViews
             this.totalElements = res.data.totalElements
             this.totalPages = res.data.totalPages
-            this.formatAllAttributes()
           }
         })
     },
@@ -330,16 +302,6 @@ export default {
         .catch(() => {
           this.loading = false
         })
-    },
-    formatAllAttributes() {
-      const list = this.list
-      for (let i = 0; i < list.length; i++) {
-        const attributes = list[i].attributes
-        list[i].attributeMap = new Map()
-        for (let j = 0; j < attributes.length; j++) {
-          list[i].attributeMap.set(attributes[j].id, attributes[j].value)
-        }
-      }
     },
     submitQueryForm() {
       if (this.probe.libraryId != null) {
@@ -453,13 +415,9 @@ export default {
 }
 
 .right-panel {
-  flex: 1 1 auto;
+  height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-.right-panel > div:nth-child(3) > div:nth-child(1) {
-  flex: 1 1 auto;
 }
 
 .operation-panel {
@@ -520,8 +478,7 @@ export default {
   cursor: pointer;
 }
 
-.el-row {
-  height: 300px;
+.row {
   margin-bottom: 20px;
   display: flex;
   flex-wrap: wrap
@@ -531,16 +488,12 @@ export default {
   height: 150px;
   min-width: 200px;
   margin-bottom: 20px;
-  transition: all .5s;
+  transition: all .25s;
 }
 
 .box-card:hover {
-  margin-top: -5px;
-}
-
-.infinite-list-wrapper {
-  background: #5a5e66;
-  overflow: auto;
-  height: 300px;
+  position: relative;
+  top: -3px;
+  left: -3px;
 }
 </style>
