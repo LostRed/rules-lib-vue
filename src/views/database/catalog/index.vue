@@ -24,14 +24,16 @@
       </div>
       <div style="margin-bottom: 20px">
         <el-table :data="list" size="small" stripe fit highlight-current-row height="100%">
+          <template slot="empty">
+            <el-empty description="暂无数据"/>
+          </template>
           <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
           <el-table-column prop="catalogName" label="目录名称" width="300"/>
           <el-table-column prop="description" label="目录描述" show-overflow-tooltip/>
-          <el-table-column fixed="right" label="操作" width="150">
+          <el-table-column fixed="right" label="操作" width="100">
             <template v-slot="scope">
               <el-button type="text" size="small" @click="handleEnter(scope.row)">进入</el-button>
               <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>

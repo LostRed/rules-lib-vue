@@ -64,7 +64,9 @@
           <el-table-column fixed="right" label="操作" width="100">
             <template v-slot="scope">
               <el-button type="text" size="small" @click="handleView(scope.row)">查看</el-button>
-<!--              <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>-->
+              <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(scope.row)">
+                <el-button slot="reference" type="text" size="small">删除</el-button>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -107,7 +109,7 @@
 </template>
 
 <script>
-import { queryRule, queryRuleByRuleCode, switchRuleEnabled } from '@/api/rule'
+import { destroyRule, queryRule, queryRuleByRuleCode, switchRuleEnabled } from '@/api/rule'
 import { queryEnum } from '@/api/system'
 
 export default {
@@ -212,6 +214,15 @@ export default {
             this.ruleInfo.businessType = this.businessTypes[this.ruleInfo.businessType]
             this.ruleInfo.grade = this.grades[this.ruleInfo.grade]
             this.dialogFormVisible = true
+          }
+        })
+    },
+    handleDelete(row) {
+      destroyRule(row.businessType, row.ruleCode)
+        .then(res => {
+          if (res.code === 0) {
+            this.$message.success('删除成功')
+            this.query()
           }
         })
     },

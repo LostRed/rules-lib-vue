@@ -24,6 +24,17 @@ export function createRule(ruleInfo) {
   })
 }
 
+export function destroyRule(businessType, ruleCode) {
+  return api({
+    url: '/rule/destroy',
+    method: 'post',
+    data: {
+      businessType: businessType,
+      ruleCode: ruleCode
+    }
+  })
+}
+
 export function switchRuleEnabled(businessType, ruleCode) {
   return api({
     url: '/rulesEngine/switchRuleEnabled',

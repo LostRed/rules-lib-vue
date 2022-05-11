@@ -33,8 +33,7 @@
                     :total="totalElements"
                     :current-page="pageable.page + 1"
                     :page-size="pageable.size"
-                    :page-sizes="[1,10, 15, 20, 50]"
-                    :pager-count="11"
+                    :page-sizes="[8, 16, 32, 64]"
                     @current-change="handleCurrentChange"
                     @size-change="handleSizeChange"
                   />
@@ -81,32 +80,58 @@
           </div>
         </div>
         <div v-if="probe.libraryId!=null">
-          <div style="margin-bottom: 20px">
-            <el-table :data="list" size="small" stripe fit highlight-current-row>
-              <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
-              <el-table-column prop="code" label="模型编号" width="100"/>
-              <el-table-column prop="keyword" label="模型关键词" show-overflow-tooltip min-width="300"/>
-              <el-table-column
-                v-for="attribute in displayedHeaders"
-                :key="attribute.id"
-                :label="attribute.attributeName"
-                show-overflow-tooltip
-                min-width="100"
-              >
-                <template v-slot="scope">
-                  <span>{{ scope.row.attributeMap.get(attribute.id) }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column fixed="right" label="操作" width="150">
-                <template v-slot="scope">
-                  <el-button type="text" size="small" @click="handleView(scope.row)">查看</el-button>
-                  <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
-                  <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(scope.row)">
-                    <el-button slot="reference" type="text" size="small">删除</el-button>
-                  </el-popconfirm>
-                </template>
-              </el-table-column>
-            </el-table>
+          <div class="infinite-list-wrapper">
+            <!--            <el-table :data="list" size="small" stripe fit highlight-current-row>-->
+            <!--              <template slot="empty">-->
+            <!--                <el-empty description="暂无数据"/>-->
+            <!--              </template>-->
+            <!--              <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>-->
+            <!--              <el-table-column prop="code" label="模型编号" width="100"/>-->
+            <!--              <el-table-column prop="keyword" label="模型关键词" show-overflow-tooltip min-width="300"/>-->
+            <!--              <el-table-column-->
+            <!--                v-for="attribute in displayedHeaders"-->
+            <!--                :key="attribute.id"-->
+            <!--                :label="attribute.attributeName"-->
+            <!--                show-overflow-tooltip-->
+            <!--                min-width="100"-->
+            <!--              >-->
+            <!--                <template v-slot="scope">-->
+            <!--                  <span>{{ scope.row.attributeMap.get(attribute.id) }}</span>-->
+            <!--                </template>-->
+            <!--              </el-table-column>-->
+            <!--              <el-table-column fixed="right" label="操作" width="120">-->
+            <!--                <template v-slot="scope">-->
+            <!--                  <el-button type="text" size="small" @click="handleView(scope.row)">查看</el-button>-->
+            <!--                  <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>-->
+            <!--                  <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(scope.row)">-->
+            <!--                    <el-button slot="reference" type="text" size="small">删除</el-button>-->
+            <!--                  </el-popconfirm>-->
+            <!--                </template>-->
+            <!--              </el-table-column>-->
+            <!--            </el-table>-->
+
+            <el-row v-infinite-scroll="load" :gutter="20" :infinite-scroll-disabled="disabled">
+              <el-col v-for="item in list" :key="item.id" :span="24">
+                <el-card class="box-card">
+                  <div slot="header" class="title">
+                    <div @click="handleView(item)">
+                      <span>{{ item.code }}</span>
+                    </div>
+                    <div>
+                      <el-button size="small" type="text" @click="handleEdit(item)">编辑</el-button>
+                      <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(item)">
+                        <el-button slot="reference" type="text" size="small">删除</el-button>
+                      </el-popconfirm>
+                    </div>
+                  </div>
+                  <div class="text item" @click="handleView(item)">
+                    {{ item.keyword }}
+                  </div>
+                </el-card>
+              </el-col>
+            </el-row>
+            <p v-if="loading">加载中...</p>
+            <p v-if="noMore">没有更多了</p>
           </div>
         </div>
       </div>
@@ -150,6 +175,7 @@ export default {
   name: 'Model',
   data() {
     return {
+      loading: false,
       tree: [],
       headers: [],
       defaultProps: {
@@ -170,7 +196,7 @@ export default {
       },
       pageable: {
         page: 0,
-        size: 10
+        size: 3
       },
       totalElements: 0,
       totalPages: 0,
@@ -200,6 +226,12 @@ export default {
         }
         return false
       })
+    },
+    noMore: function() {
+      return this.list.length >= this.totalElements
+    },
+    disabled: function() {
+      return this.loading || this.noMore
     }
   },
   created() {
@@ -277,6 +309,26 @@ export default {
             this.totalPages = res.data.totalPages
             this.formatAllAttributes()
           }
+        })
+    },
+    load() {
+      this.loading = true
+      this.pageable.page++
+      const searchParam = {
+        probe: this.probe,
+        pageable: this.pageable
+      }
+      searchModel(searchParam)
+        .then(res => {
+          if (res.code === 0) {
+            this.attributes = []
+            this.list.concat(res.data.modelViews)
+            this.attributeViews = res.data.attributeViews
+            this.loading = false
+          }
+        })
+        .catch(() => {
+          this.loading = false
         })
     },
     formatAllAttributes() {
@@ -395,25 +447,12 @@ export default {
   padding-top: 50px;
 }
 
-.app-container {
-}
-
-.app-container > div:nth-child(2) {
-  flex: 1 1 auto;
-}
-
 .left-panel {
   min-width: 200px;
   margin-right: 20px;
 }
 
 .right-panel {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.right-panel > div:nth-child(3) {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
@@ -457,5 +496,51 @@ export default {
 
 .filter-label {
   width: 80px;
+}
+
+.text {
+  font-size: 14px;
+}
+
+.item {
+  margin-bottom: 18px;
+}
+
+.item:hover {
+  cursor: pointer;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title > div:nth-child(1):hover {
+  cursor: pointer;
+}
+
+.el-row {
+  height: 300px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap
+}
+
+.box-card {
+  height: 150px;
+  min-width: 200px;
+  margin-bottom: 20px;
+  transition: all .5s;
+}
+
+.box-card:hover {
+  margin-top: -5px;
+}
+
+.infinite-list-wrapper {
+  background: #5a5e66;
+  overflow: auto;
+  height: 300px;
 }
 </style>

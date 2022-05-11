@@ -45,6 +45,9 @@
         </div>
         <div style="margin-bottom: 20px">
           <el-table :data="list" size="small" stripe fit highlight-current-row height="100%">
+            <template slot="empty">
+              <el-empty description="暂无数据"/>
+            </template>
             <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
             <el-table-column prop="displayed" label="是否展示" width="100">
               <template v-slot="scope">
@@ -60,7 +63,7 @@
             <el-table-column prop="valueType" label="值类型" width="100" :formatter="formatValueType"/>
             <el-table-column prop="attributeName" label="属性名称" width="200"/>
             <el-table-column prop="valueList" label="值可选列表" :formatter="formatValueList" show-overflow-tooltip/>
-            <el-table-column fixed="right" label="操作" width="150">
+            <el-table-column fixed="right" label="操作" width="100">
               <template v-slot="scope">
                 <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
                 <el-button type="text" size="small">删除</el-button>
