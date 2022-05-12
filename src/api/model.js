@@ -57,3 +57,11 @@ export function deleteModel(queryParam) {
     data: queryParam
   })
 }
+
+export function importModel(libraryId, formData) {
+  return api({
+    url: `/model/import/${libraryId}`,
+    method: 'post',
+    data: formData
+  })
+}

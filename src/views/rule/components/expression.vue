@@ -148,11 +148,9 @@ export default {
     }
   },
   created() {
-    queryDomain({ probe: {}})
+    queryDomain({})
       .then(res => {
-        if (res.code === 0) {
-          this.domains = res.data
-        }
+        this.domains = res.data
       })
     querySegment({ probe: { segmentType: 'PARAMETER' }, pageable: null })
       .then(res => {
@@ -180,9 +178,7 @@ export default {
       this.probe.className = val
       queryByClassName(this.probe.className)
         .then(res => {
-          if (res.code === 0) {
-            this.properties = res.data.domainProperties
-          }
+          this.properties = res.data.domainProperties
         })
     },
     back() {
@@ -201,11 +197,9 @@ export default {
         if (valid) {
           parseExpression(this.probe)
             .then(res => {
-              if (res.code === 0) {
-                console.log(res)
-                this.$emit('generation', this.probe.expression)
-                this.probe.expression = ''
-              }
+              console.log(res)
+              this.$emit('generation', this.probe.expression)
+              this.probe.expression = ''
             })
         }
       })

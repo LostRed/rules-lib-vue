@@ -39,8 +39,9 @@
               </el-form-item>
             </el-form>
           </div>
-          <div>
+          <div style="display: flex">
             <el-button type="success" size="small" @click="handleCreate()">创建</el-button>
+            <el-button type="primary" size="small" @click="handleDownload()">下载模板</el-button>
           </div>
         </div>
         <div style="margin-bottom: 20px">
@@ -178,19 +179,17 @@ export default {
   },
   created() {
     queryTree().then(res => {
-      if (res.code === 0) {
-        this.tree = res.data
-      }
+      this.tree = res.data
     })
   },
   methods: {
     indexMethod(index) {
       return index + 1
     },
-    formatValueType(row, column, cellValue, index) {
+    formatValueType(row, column, cellValue) {
       return cellValue === 'ONE' ? '单值' : '多值'
     },
-    formatValueList(row, column, cellValue, index) {
+    formatValueList(row, column, cellValue) {
       if (cellValue != null) {
         return cellValue.join()
       }
@@ -205,11 +204,9 @@ export default {
       }
       queryAttribute(queryParam)
         .then(res => {
-          if (res.code === 0) {
-            this.list = res.data.content
-            this.totalElements = res.data.totalElements
-            this.totalPages = res.data.totalPages
-          }
+          this.list = res.data.content
+          this.totalElements = res.data.totalElements
+          this.totalPages = res.data.totalPages
         })
     },
     resetQueryForm(formName) {
@@ -224,7 +221,7 @@ export default {
       }
       this.query()
     },
-    handleTreeNodeClick(data, node, element) {
+    handleTreeNodeClick(data, node) {
       if (node.isLeaf) {
         this.probe.libraryId = node.key
         this.query()
@@ -248,6 +245,21 @@ export default {
       this.attribute.libraryId = this.probe.libraryId
       this.dialogFormVisible = true
       this.operation = '编辑'
+    },
+    handleDownload() {
+      if (this.probe.libraryId == null) {
+        this.$message('请先选择一个库')
+        return
+      }
+      const iframe = document.createElement('iframe')
+      iframe.src = `/api/library/template/${this.probe.libraryId}`
+      iframe.style.display = 'none'
+      iframe.id = 'download'
+      const download = document.getElementById('download')
+      if (download != null) {
+        document.body.removeChild(download)
+      }
+      document.body.appendChild(iframe)
     },
     handleCreate() {
       if (this.probe.libraryId == null) {
@@ -274,19 +286,15 @@ export default {
         if (valid) {
           if (this.operation === '编辑') {
             editAttribute(this.attribute)
-              .then(res => {
-                if (res.code === 0) {
-                  this.$message.success('修改成功')
-                  this.query()
-                }
+              .then(() => {
+                this.$message.success('修改成功')
+                this.query()
               })
           } else {
             createAttribute(this.attribute)
-              .then(res => {
-                if (res.code === 0) {
-                  this.$message.success('创建成功')
-                  this.query()
-                }
+              .then(() => {
+                this.$message.success('创建成功')
+                this.query()
               })
           }
           this.dialogFormVisible = false
@@ -331,6 +339,7 @@ export default {
 .operation-panel {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
 }
 
 .pagination {

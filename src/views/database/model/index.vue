@@ -32,11 +32,12 @@
               <el-form-item>
                 <div class="pagination">
                   <el-pagination
-                    layout="total, sizes, prev, pager, next, jumper"
+                    layout="total, sizes, prev, pager, next"
                     :total="totalElements"
                     :current-page="pageable.page + 1"
                     :page-size="pageable.size"
                     :page-sizes="[8, 16, 32, 64]"
+                    :pager-count="5"
                     @current-change="handleCurrentChange"
                     @size-change="handleSizeChange"
                   />
@@ -44,10 +45,31 @@
               </el-form-item>
             </el-form>
           </div>
-          <div>
+          <div style="display: flex">
             <el-button :disabled="probe.libraryId==null" type="success" size="small" @click="handleCreate()">
               创建
             </el-button>
+            <el-upload
+              ref="upload"
+              action=""
+              accept=".json,.xls,.xlsx"
+              :limit="1"
+              :file-list="fileList"
+              :on-change="handleImport"
+              :auto-upload="false"
+              :show-file-list="false"
+              :disabled="probe.libraryId==null"
+              style="margin-left: 10px"
+            >
+              <el-button
+                slot="trigger"
+                :disabled="probe.libraryId==null"
+                :loading="loading"
+                size="small"
+                type="primary"
+              >导入
+              </el-button>
+            </el-upload>
           </div>
         </div>
         <div>
@@ -105,7 +127,6 @@
               </div>
             </el-col>
           </el-row>
-
         </div>
       </div>
       <el-dialog :title="operation+'模型'" :visible.sync="dialogFormVisible" width="50%">
@@ -141,13 +162,14 @@
 </template>
 
 <script>
-import { deleteModel, editModel, info, searchModel } from '@/api/model'
+import { deleteModel, editModel, importModel, info, searchModel } from '@/api/model'
 import { queryTree, queryByLibrary } from '@/api/attribute'
 
 export default {
   name: 'Model',
   data() {
     return {
+      fileList: [],
       loading: false,
       tree: [],
       headers: [],
@@ -199,19 +221,11 @@ export default {
         }
         return false
       })
-    },
-    noMore: function() {
-      return this.list.length >= this.totalElements
-    },
-    disabled: function() {
-      return this.loading || this.noMore
     }
   },
   created() {
     queryTree().then(res => {
-      if (res.code === 0) {
-        this.tree = res.data
-      }
+      this.tree = res.data
     })
     this.probe.libraryId = this.$route.params.libraryId
     if (this.probe.libraryId != null) {
@@ -231,12 +245,10 @@ export default {
     queryHeaders() {
       queryByLibrary({ probe: this.probe.libraryId })
         .then(res => {
-          if (res.code === 0) {
-            this.headers = res.data
-          }
+          this.headers = res.data
         })
     },
-    handleTreeNodeClick(data, node, element) {
+    handleTreeNodeClick(data, node) {
       if (node.isLeaf) {
         this.probe.libraryId = node.key
         this.queryHeaders()
@@ -254,7 +266,7 @@ export default {
       }
       this.query()
     },
-    handleClickTag(attributeId, val, values) {
+    handleClickTag(attributeId, val) {
       for (let i = 0; i < this.probe.attributes.length; i++) {
         if (this.probe.attributes[i].id === attributeId) {
           this.probe.attributes.splice(i, 1)
@@ -274,33 +286,11 @@ export default {
       }
       searchModel(searchParam)
         .then(res => {
-          if (res.code === 0) {
-            this.attributes = []
-            this.list = res.data.modelViews
-            this.attributeViews = res.data.attributeViews
-            this.totalElements = res.data.totalElements
-            this.totalPages = res.data.totalPages
-          }
-        })
-    },
-    load() {
-      this.loading = true
-      this.pageable.page++
-      const searchParam = {
-        probe: this.probe,
-        pageable: this.pageable
-      }
-      searchModel(searchParam)
-        .then(res => {
-          if (res.code === 0) {
-            this.attributes = []
-            this.list.concat(res.data.modelViews)
-            this.attributeViews = res.data.attributeViews
-            this.loading = false
-          }
-        })
-        .catch(() => {
-          this.loading = false
+          this.attributes = []
+          this.list = res.data.modelViews
+          this.attributeViews = res.data.attributeViews
+          this.totalElements = res.data.totalElements
+          this.totalPages = res.data.totalPages
         })
     },
     submitQueryForm() {
@@ -328,21 +318,19 @@ export default {
     queryById(row) {
       info(row.id)
         .then(res => {
-          if (res.code === 0) {
-            this.model = res.data
-            for (let i = 0; i < this.headers.length; i++) {
-              const attribute = this.findAttribute(this.headers[i])
-              if (attribute != null) {
-                attribute.valueType = this.headers[i].valueType
-                attribute.valueList = this.headers[i].valueList
-              } else {
-                this.model.attributes.push({
-                  id: this.headers[i].id,
-                  attributeName: this.headers[i].attributeName,
-                  valueType: this.headers[i].valueType,
-                  valueList: this.headers[i].valueList
-                })
-              }
+          this.model = res.data
+          for (let i = 0; i < this.headers.length; i++) {
+            const attribute = this.findAttribute(this.headers[i])
+            if (attribute != null) {
+              attribute.valueType = this.headers[i].valueType
+              attribute.valueList = this.headers[i].valueList
+            } else {
+              this.model.attributes.push({
+                id: this.headers[i].id,
+                attributeName: this.headers[i].attributeName,
+                valueType: this.headers[i].valueType,
+                valueList: this.headers[i].valueList
+              })
             }
           }
         })
@@ -366,6 +354,19 @@ export default {
         }
       }
     },
+    handleImport(file) {
+      console.log(file.raw)
+      this.loading = true
+      const formData = new FormData()
+      formData.append('file', file.raw)
+      importModel(this.probe.libraryId, formData)
+        .then(() => {
+          this.$message.success('导入成功')
+          this.$refs.upload.clearFiles()
+          this.query()
+          this.loading = false
+        })
+    },
     handleCreate() {
       this.$router.push({
         name: 'CreateModel',
@@ -376,11 +377,9 @@ export default {
     },
     handleDelete(row) {
       deleteModel({ probe: row.id })
-        .then(res => {
-          if (res.code === 0) {
-            this.$message.success('删除成功')
-            this.query()
-          }
+        .then(() => {
+          this.$message.success('删除成功')
+          this.query()
         })
     },
     closeDialog(formName) {
@@ -423,10 +422,7 @@ export default {
 .operation-panel {
   display: flex;
   justify-content: space-between;
-}
-
-.pagination {
-  margin-left: 50px;
+  align-items: flex-start;
 }
 
 .property-input {

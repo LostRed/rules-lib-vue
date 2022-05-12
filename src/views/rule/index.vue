@@ -172,10 +172,10 @@ export default {
     this.query()
   },
   methods: {
-    formatBusinessType(row, column, cellValue, index) {
+    formatBusinessType(row, column, cellValue) {
       return this.businessTypes[cellValue]
     },
-    formatGrade(row, column, cellValue, index) {
+    formatGrade(row, column, cellValue) {
       return this.grades[cellValue]
     },
     query() {
@@ -185,11 +185,9 @@ export default {
       }
       queryRule(queryParam)
         .then(res => {
-          if (res.code === 0) {
-            this.list = res.data.content
-            this.totalElements = res.data.totalElements
-            this.totalPages = res.data.totalPages
-          }
+          this.list = res.data.content
+          this.totalElements = res.data.totalElements
+          this.totalPages = res.data.totalPages
         })
     },
     submitQueryForm() {
@@ -209,36 +207,30 @@ export default {
     handleView(row) {
       queryRuleByRuleCode({ probe: row.ruleCode })
         .then(res => {
-          if (res.code === 0) {
-            this.ruleInfo = res.data
-            this.ruleInfo.businessType = this.businessTypes[this.ruleInfo.businessType]
-            this.ruleInfo.grade = this.grades[this.ruleInfo.grade]
-            this.dialogFormVisible = true
-          }
+          this.ruleInfo = res.data
+          this.ruleInfo.businessType = this.businessTypes[this.ruleInfo.businessType]
+          this.ruleInfo.grade = this.grades[this.ruleInfo.grade]
+          this.dialogFormVisible = true
         })
     },
     handleDelete(row) {
       destroyRule(row.businessType, row.ruleCode)
-        .then(res => {
-          if (res.code === 0) {
-            this.$message.success('删除成功')
-            this.query()
-          }
+        .then(() => {
+          this.$message.success('删除成功')
+          this.query()
         })
     },
     handleEdit(row) {
       queryRuleByRuleCode({ probe: row.ruleCode })
         .then(res => {
-          if (res.code === 0) {
-            const ruleInfo = res.data
-            this.$router.push({
-              name: 'EditRule',
-              params: {
-                ruleInfo: ruleInfo,
-                operation: '编辑'
-              }
-            })
-          }
+          const ruleInfo = res.data
+          this.$router.push({
+            name: 'EditRule',
+            params: {
+              ruleInfo: ruleInfo,
+              operation: '编辑'
+            }
+          })
         })
     },
     handleCreate() {
@@ -251,10 +243,8 @@ export default {
     },
     switchEnabled(row) {
       switchRuleEnabled(row.businessType, row.ruleCode)
-        .then(res => {
-          if (res.code === 0) {
-            this.$message.success('操作成功')
-          }
+        .then(() => {
+          this.$message.success('操作成功')
         })
         .catch(() => {
           this.query()

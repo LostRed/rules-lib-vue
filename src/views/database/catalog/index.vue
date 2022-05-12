@@ -118,11 +118,9 @@ export default {
       }
       queryCatalog(queryParam)
         .then(res => {
-          if (res.code === 0) {
-            this.list = res.data.content
-            this.totalElements = res.data.totalElements
-            this.totalPages = res.data.totalPages
-          }
+          this.list = res.data.content
+          this.totalElements = res.data.totalElements
+          this.totalPages = res.data.totalPages
         })
     },
     submitQueryForm() {
@@ -169,19 +167,15 @@ export default {
         if (valid) {
           if (this.operation === '编辑') {
             editCatalog(this.catalog)
-              .then(res => {
-                if (res.code === 0) {
-                  this.$message.success('修改成功')
-                  this.query()
-                }
+              .then(() => {
+                this.$message.success('修改成功')
+                this.query()
               })
           } else {
             createCatalog(this.catalog)
-              .then(res => {
-                if (res.code === 0) {
-                  this.$message.success('创建成功')
-                  this.query()
-                }
+              .then(() => {
+                this.$message.success('创建成功')
+                this.query()
               })
           }
           this.dialogFormVisible = false

@@ -164,10 +164,8 @@ export default {
     }
     queryByLibrary({ probe: this.model.libraryId })
       .then(res => {
-        if (res.code === 0) {
-          console.log(res.data)
-          this.model.attributes = res.data
-        }
+        console.log(res.data)
+        this.model.attributes = res.data
       })
   },
   methods: {
@@ -212,12 +210,10 @@ export default {
         this.$refs['modelPropForm'].validate(next)
       } else if (this.active === 2) {
         createModel(this.model)
-          .then(res => {
-            if (res.code === 0) {
-              this.$message.success('创建成功')
-              this.isSuccess = true
-              next(true)
-            }
+          .then(() => {
+            this.$message.success('创建成功')
+            this.isSuccess = true
+            next(true)
           })
       } else {
         next(true)

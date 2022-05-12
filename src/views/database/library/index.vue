@@ -151,9 +151,7 @@ export default {
   created() {
     queryCatalog({})
       .then(res => {
-        if (res.code === 0) {
-          this.catalogs = res.data.content
-        }
+        this.catalogs = res.data.content
       })
     this.probe.catalogId = this.$route.params.catalogId
     if (this.probe.catalogId != null) {
@@ -171,11 +169,9 @@ export default {
       }
       queryLibrary(queryParam)
         .then(res => {
-          if (res.code === 0) {
-            this.list = res.data.content
-            this.totalElements = res.data.totalElements
-            this.totalPages = res.data.totalPages
-          }
+          this.list = res.data.content
+          this.totalElements = res.data.totalElements
+          this.totalPages = res.data.totalPages
         })
     },
     submitQueryForm() {
@@ -234,19 +230,15 @@ export default {
         if (valid) {
           if (this.operation === '编辑') {
             editLibrary(this.library)
-              .then(res => {
-                if (res.code === 0) {
-                  this.$message.success('修改成功')
-                  this.query()
-                }
+              .then(() => {
+                this.$message.success('修改成功')
+                this.query()
               })
           } else {
             createLibrary(this.library)
-              .then(res => {
-                if (res.code === 0) {
-                  this.$message.success('创建成功')
-                  this.query()
-                }
+              .then(() => {
+                this.$message.success('创建成功')
+                this.query()
               })
           }
           this.dialogFormVisible = false

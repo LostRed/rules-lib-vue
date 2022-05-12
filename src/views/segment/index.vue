@@ -147,7 +147,7 @@ export default {
     indexMethod(index) {
       return index + 1
     },
-    formatSegmentType(row, column, cellValue, index) {
+    formatSegmentType(row, column, cellValue) {
       return this.segmentTypes[cellValue]
     },
     query() {
@@ -157,11 +157,9 @@ export default {
       }
       querySegment(queryParam)
         .then(res => {
-          if (res.code === 0) {
-            this.list = res.data.content
-            this.totalElements = res.data.totalElements
-            this.totalPages = res.data.totalPages
-          }
+          this.list = res.data.content
+          this.totalElements = res.data.totalElements
+          this.totalPages = res.data.totalPages
         })
     },
     submitQueryForm() {
@@ -201,19 +199,15 @@ export default {
         if (valid) {
           if (this.operation === '编辑') {
             editSegment(this.segmentInfo)
-              .then(res => {
-                if (res.code === 0) {
-                  this.$message.success('修改成功')
-                  this.query()
-                }
+              .then(() => {
+                this.$message.success('修改成功')
+                this.query()
               })
           } else {
             createSegment(this.segmentInfo)
-              .then(res => {
-                if (res.code === 0) {
-                  this.$message.success('创建成功')
-                  this.query()
-                }
+              .then(() => {
+                this.$message.success('创建成功')
+                this.query()
               })
           }
           this.dialogFormVisible = false

@@ -178,13 +178,11 @@ export default {
         if (valid) {
           if (this.operation === '创建') {
             createRule(this.ruleInfo)
-              .then(res => {
-                if (res.code === 0) {
-                  this.$message.success('创建成功')
-                  this.$router.push({
-                    name: 'Rule'
-                  })
-                }
+              .then(() => {
+                this.$message.success('创建成功')
+                this.$router.push({
+                  name: 'Rule'
+                })
               })
           }
         }
