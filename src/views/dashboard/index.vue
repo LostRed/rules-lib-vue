@@ -4,7 +4,7 @@
       <el-divider content-position="left">规则引擎</el-divider>
       <el-row :gutter="20">
         <el-col v-for="item in rulesEngines" :key="item.id" :span="6">
-          <div @click="handleEnter(item.businessType)">
+          <div @click="handleEnter(businessTypes[item.businessType],item.businessType)">
             <el-card class="box-card">
               <div slot="header" class="title">
                 <div>
@@ -52,11 +52,11 @@ export default {
       })
   },
   methods: {
-    handleEnter(businessType) {
-      console.log(businessType)
+    handleEnter(title, businessType) {
       this.$router.push({
         name: 'RulesEngine',
         params: {
+          title: title,
           businessType: businessType
         }
       })
