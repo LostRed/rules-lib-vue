@@ -87,7 +87,8 @@
 <script>
 
 import Expression from '@/views/rule/components/expression'
-import { createRule, getAllEngineBusinessType } from '@/api/rule'
+import { createRule } from '@/api/rule'
+import { getAllEngineBusinessType } from '@/api/rulesEngine'
 
 export default {
   name: 'EditRule',

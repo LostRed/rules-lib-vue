@@ -46,3 +46,15 @@ export function switchDisplayed(queryParam) {
     data: queryParam
   })
 }
+
+export function downloadTemplate(libraryId) {
+  const iframe = document.createElement('iframe')
+  iframe.src = `/api/attribute/template/${libraryId}`
+  iframe.style.display = 'none'
+  iframe.id = 'download'
+  const download = document.getElementById('download')
+  if (download != null) {
+    document.body.removeChild(download)
+  }
+  document.body.appendChild(iframe)
+}

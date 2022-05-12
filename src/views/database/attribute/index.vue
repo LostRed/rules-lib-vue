@@ -129,7 +129,14 @@
 </template>
 
 <script>
-import { createAttribute, editAttribute, queryAttribute, switchDisplayed, queryTree } from '@/api/attribute'
+import {
+  createAttribute,
+  editAttribute,
+  queryAttribute,
+  switchDisplayed,
+  queryTree,
+  downloadTemplate
+} from '@/api/attribute'
 
 export default {
   name: 'Attribute',
@@ -251,15 +258,7 @@ export default {
         this.$message('请先选择一个库')
         return
       }
-      const iframe = document.createElement('iframe')
-      iframe.src = `/api/library/template/${this.probe.libraryId}`
-      iframe.style.display = 'none'
-      iframe.id = 'download'
-      const download = document.getElementById('download')
-      if (download != null) {
-        document.body.removeChild(download)
-      }
-      document.body.appendChild(iframe)
+      downloadTemplate(this.probe.libraryId)
     },
     handleCreate() {
       if (this.probe.libraryId == null) {

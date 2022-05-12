@@ -34,21 +34,3 @@ export function destroyRule(businessType, ruleCode) {
     }
   })
 }
-
-export function switchRuleEnabled(businessType, ruleCode) {
-  return api({
-    url: '/rulesEngine/switchRuleEnabled',
-    method: 'post',
-    data: {
-      businessType,
-      ruleCode
-    }
-  })
-}
-
-export function getAllEngineBusinessType() {
-  return api({
-    url: '/rulesEngine/getAllEngineBusinessType',
-    method: 'get'
-  })
-}

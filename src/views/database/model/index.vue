@@ -131,7 +131,7 @@
       </div>
       <el-dialog :title="operation+'模型'" :visible.sync="dialogFormVisible" width="50%">
         <el-form ref="modelAttrForm" size="small" :model="model" label-width="100px">
-          <el-row class="row">
+          <el-row>
             <el-col v-for="attribute in model.attributes" :key="attribute.id" :span="12">
               <el-form-item v-if="attribute.valueList==null||attribute.length===0" :label="attribute.attributeName">
                 <el-input v-model="attribute.value" class="property-input" :disabled="operation==='查看'"/>
@@ -474,14 +474,8 @@ export default {
   cursor: pointer;
 }
 
-.row {
-  margin-bottom: 20px;
-  display: flex;
-  flex-wrap: wrap
-}
-
 .box-card {
-  height: 150px;
+  height: 160px;
   min-width: 200px;
   margin-bottom: 20px;
   transition: all .25s;

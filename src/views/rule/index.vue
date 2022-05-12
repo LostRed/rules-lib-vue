@@ -109,7 +109,8 @@
 </template>
 
 <script>
-import { destroyRule, queryRule, queryRuleByRuleCode, switchRuleEnabled } from '@/api/rule'
+import { destroyRule, queryRule, queryRuleByRuleCode } from '@/api/rule'
+import { switchRuleEnabled } from '@/api/rulesEngine'
 import { queryEnum } from '@/api/system'
 
 export default {
