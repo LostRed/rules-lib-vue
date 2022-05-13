@@ -107,20 +107,20 @@
         <div v-if="probe.libraryId!=null">
           <el-row :gutter="20">
             <el-col v-for="item in list" :key="item.id" :span="6">
-              <div>
-                <el-card class="box-card">
+              <div @click="handleView(item)">
+                <el-card class="box-card" shadow="hover">
                   <div slot="header" class="title">
-                    <div @click="handleView(item)">
+                    <div>
                       <span>{{ item.code }}</span>
                     </div>
                     <div>
-                      <el-button size="small" type="text" @click="handleEdit(item)">编辑</el-button>
+                      <el-button size="small" type="text" @click="handleEdit(item,$event)">编辑</el-button>
                       <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(item)">
-                        <el-button slot="reference" type="text" size="small">删除</el-button>
+                        <el-button slot="reference" type="text" size="small" @click="deterDialog($event)">删除</el-button>
                       </el-popconfirm>
                     </div>
                   </div>
-                  <div class="text item" @click="handleView(item)">
+                  <div class="text item">
                     {{ item.keyword }}
                   </div>
                 </el-card>
@@ -335,13 +335,17 @@ export default {
           }
         })
     },
+    deterDialog(e) {
+      e.stopPropagation()
+    },
     handleView(row) {
       this.queryHeaders()
       this.queryById(row)
       this.dialogFormVisible = true
       this.operation = '查看'
     },
-    handleEdit(row) {
+    handleEdit(row, e) {
+      e.stopPropagation()
       this.queryHeaders()
       this.queryById(row)
       this.dialogFormVisible = true
@@ -460,30 +464,19 @@ export default {
   margin-bottom: 18px;
 }
 
-.item:hover {
-  cursor: pointer;
-}
-
 .title {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.title > div:nth-child(1):hover {
-  cursor: pointer;
-}
-
 .box-card {
   height: 160px;
   min-width: 200px;
   margin-bottom: 20px;
-  transition: all .25s;
 }
 
 .box-card:hover {
-  position: relative;
-  top: -3px;
-  left: -3px;
+  cursor: pointer;
 }
 </style>

@@ -5,7 +5,7 @@
       <el-row :gutter="20">
         <el-col v-for="item in rulesEngines" :key="item.id" :span="6">
           <div @click="handleEnter(businessTypes[item.businessType],item.businessType)">
-            <el-card class="box-card">
+            <el-card class="box-card" shadow="hover">
               <div slot="header" class="title">
                 <div>
                   <span>{{ businessTypes[item.businessType] }}</span>
@@ -85,17 +85,7 @@ export default {
   justify-content: space-between;
 }
 
-.box-card {
-  height: 160px;
-  min-width: 200px;
-  margin-bottom: 20px;
-  transition: all .25s;
-}
-
 .box-card:hover {
   cursor: pointer;
-  position: relative;
-  top: -3px;
-  left: -3px;
 }
 </style>
