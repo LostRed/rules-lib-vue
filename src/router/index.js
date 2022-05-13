@@ -173,7 +173,7 @@ export const constantRoutes = [
   },
 
   {
-    path: '/segment.js',
+    path: '/segment',
     component: Layout,
     redirect: '/segment/index', // 重定向地址，在面包屑中点击会重定向去的地址
     hidden: false, // 不在侧边栏显示

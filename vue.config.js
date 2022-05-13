@@ -38,7 +38,8 @@ module.exports = {
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://gateway.docker.internal:8080',
+        changeOrigin: true,
         pathRewrite: { '^/api': '' }
       }
     },
