@@ -2,11 +2,17 @@
   <div class="fixed-container">
     <div class="app-container">
       <el-page-header :content="title" @back="back"/>
-      <el-row type="flex" justify="center" :gutter="20" style="margin-top: 20px;height: 100%">
+      <el-row align="middle" type="flex" justify="center" :gutter="20" style="margin-top: 20px;height: 100%">
         <el-col :span="10" style="height: 100%">
           <el-form style="height: 100%">
             <el-form-item label="输入">
-              <el-input type="textarea" :rows="25" :value="input" @input="changValue"/>
+              <el-input
+                type="textarea"
+                :value="input"
+                :rows="25"
+                class="resizeNone"
+                @input="changValue"
+              />
             </el-form-item>
           </el-form>
         </el-col>
@@ -22,8 +28,14 @@
         </el-col>
         <el-col :span="10" style="height: 100%">
           <el-form style="height: 100%">
-            <el-form-item label="输出">
-              <el-input type="textarea" :rows="25" :value="output" readonly/>
+            <el-form-item label="输出" style="height: 100%">
+              <el-input
+                type="textarea"
+                :value="output"
+                :rows="25"
+                class="resizeNone"
+                readonly
+              />
             </el-form-item>
           </el-form>
         </el-col>
@@ -53,7 +65,7 @@ export default {
   created() {
     this.title = this.$route.params.title
     this.param.businessType = this.$route.params.businessType
-    this.input = JSON.stringify(this.param, null, '\t')
+    this.input = JSON.stringify(this.param, null, '    ')
   },
   methods: {
     back() {
@@ -66,14 +78,14 @@ export default {
       const data = JSON.parse(this.input)
       evaluate(data)
         .then(res => {
-          this.output = JSON.stringify(res.data, null, '\t')
+          this.output = JSON.stringify(res.data, null, '    ')
         })
     },
     execute() {
       const data = JSON.parse(this.input)
       execute(data)
         .then(res => {
-          this.output = JSON.stringify(res.data, null, '\t')
+          this.output = JSON.stringify(res.data, null, '    ')
         })
     }
   }
@@ -92,7 +104,7 @@ export default {
 }
 
 .button-panel {
-  height: 100%;
+  margin-top: 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;

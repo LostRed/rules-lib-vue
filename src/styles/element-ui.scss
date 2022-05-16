@@ -47,3 +47,9 @@
 .el-range-separator {
   box-sizing: content-box;
 }
+
+.resizeNone {
+  .el-textarea__inner {
+    resize: none;
+  }
+}
