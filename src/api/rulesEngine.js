@@ -40,3 +40,13 @@ export function execute(data) {
     data: data
   })
 }
+
+export function queryRuleInfosByBusinessType(businessType) {
+  return api({
+    url: '/rulesEngine/queryRuleInfosByBusinessType',
+    method: 'post',
+    data: {
+      probe: businessType
+    }
+  })
+}

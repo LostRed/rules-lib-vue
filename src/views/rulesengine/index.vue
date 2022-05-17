@@ -1,92 +1,85 @@
 <template>
   <div class="fixed-container">
     <div class="app-container">
-      <el-page-header :content="title" @back="back"/>
-      <el-row align="middle" type="flex" justify="center" :gutter="20" style="margin-top: 20px;height: 100%">
-        <el-col :span="10" style="height: 100%">
-          <el-form style="height: 100%">
-            <el-form-item label="输入">
-              <el-input
-                type="textarea"
-                :value="input"
-                :rows="25"
-                class="resizeNone"
-                @input="changValue"
-              />
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="2" style="height: 100%">
-          <div class="button-panel">
-            <div style="margin-bottom: 20px">
-              <el-button size="small" @click="evaluate">评估</el-button>
-            </div>
+      <el-page-header :content="businessTypes[businessType]+'规则'" @back="back"/>
+      <div style="margin-top: 20px">
+        <el-row :gutter="20">
+          <el-col v-for="item in rules" :key="item.id" :span="6">
             <div>
-              <el-button size="small" @click="execute">执行</el-button>
+              <el-card class="box-card" shadow="hover">
+                <div slot="header" class="title">
+                  <div>
+                    <span>{{ item.ruleCode }}</span>
+                  </div>
+                </div>
+                <div class="text item">
+                  <el-descriptions :column="1">
+                    <el-descriptions-item label="业务类型">
+                      <el-tag size="mini">{{ businessTypes[item.businessType] }}</el-tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="严重等级">
+                      <el-tag size="mini" :type="item.grade==='ILLEGAL'?'danger':'warning'">
+                        {{ grades[item.grade] }}
+                      </el-tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="规则描述">{{ item.description }}</el-descriptions-item>
+                    <el-descriptions-item label="执行顺序">{{ item.order }}</el-descriptions-item>
+                    <el-descriptions-item label="是否必须启用">
+                      <el-switch v-model="item.required" disabled/>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="参数表达式">
+                      <el-tag size="mini" type="info">{{ item.parameterExp }}</el-tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="条件表达式">
+                      <el-tag size="mini" type="info">{{ item.conditionExp }}</el-tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="断定表达式">
+                      <el-tag size="mini" type="info">{{ item.predicateExp }}</el-tag>
+                    </el-descriptions-item>
+                  </el-descriptions>
+                </div>
+              </el-card>
             </div>
-          </div>
-        </el-col>
-        <el-col :span="10" style="height: 100%">
-          <el-form style="height: 100%">
-            <el-form-item label="输出" style="height: 100%">
-              <el-input
-                type="textarea"
-                :value="output"
-                :rows="25"
-                class="resizeNone"
-                readonly
-              />
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
+          </el-col>
+        </el-row>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { evaluate, execute } from '@/api/rulesEngine'
+
+import { queryRuleInfosByBusinessType } from '@/api/rulesEngine'
+import { queryEnum } from '@/api/system'
 
 export default {
   name: 'RulesEngine',
   data() {
     return {
-      title: '',
-      param: {
-        businessType: '',
-        className: '',
-        id: '',
-        input: {}
-      },
-      input: '',
-      output: ''
+      grades: {},
+      businessTypes: {},
+      businessType: '',
+      rules: []
     }
   },
   created() {
-    this.title = this.$route.params.title
-    this.param.businessType = this.$route.params.businessType
-    this.input = JSON.stringify(this.param, null, '    ')
+    this.businessType = this.$route.params.businessType
+    queryEnum({ probe: 'businessType' })
+      .then(res => {
+        this.businessTypes = res.data
+      })
+    queryEnum({ probe: 'gradeType' })
+      .then(res => {
+        this.grades = res.data
+      })
+    queryRuleInfosByBusinessType(this.businessType)
+      .then(res => {
+        this.rules = res.data
+      })
   },
   methods: {
     back() {
       this.$router.push('/')
-    },
-    changValue(val) {
-      this.input = val
-    },
-    evaluate() {
-      const data = JSON.parse(this.input)
-      evaluate(data)
-        .then(res => {
-          this.output = JSON.stringify(res.data, null, '    ')
-        })
-    },
-    execute() {
-      const data = JSON.parse(this.input)
-      execute(data)
-        .then(res => {
-          this.output = JSON.stringify(res.data, null, '    ')
-        })
     }
   }
 }
@@ -103,11 +96,17 @@ export default {
   height: 100%;
 }
 
-.button-panel {
-  margin-top: 50px;
+.text {
+  font-size: 14px;
+}
+
+.item {
+  margin-bottom: 18px;
+}
+
+.title {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>

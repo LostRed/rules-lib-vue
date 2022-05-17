@@ -4,11 +4,19 @@
       <el-divider content-position="left">规则引擎</el-divider>
       <el-row :gutter="20">
         <el-col v-for="item in rulesEngines" :key="item.id" :span="6">
-          <div @click="handleEnter(businessTypes[item.businessType],item.businessType)">
+          <div @click="handleEnter(item.businessType)">
             <el-card class="box-card" shadow="hover">
               <div slot="header" class="title">
                 <div>
                   <span>{{ businessTypes[item.businessType] }}</span>
+                </div>
+                <div>
+                  <el-button
+                    size="small"
+                    type="text"
+                    @click="handleTest(businessTypes[item.businessType],item.businessType,$event)"
+                  >测试
+                  </el-button>
                 </div>
               </div>
               <div class="text item">
@@ -52,9 +60,18 @@ export default {
       })
   },
   methods: {
-    handleEnter(title, businessType) {
+    handleEnter(businessType) {
       this.$router.push({
         name: 'RulesEngine',
+        params: {
+          businessType: businessType
+        }
+      })
+    },
+    handleTest(title, businessType, e) {
+      e.stopPropagation()
+      this.$router.push({
+        name: 'Test',
         params: {
           title: title,
           businessType: businessType
