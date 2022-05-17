@@ -148,7 +148,7 @@ export default {
     }
   },
   created() {
-    queryDomain({})
+    queryDomain({ probe: {}})
       .then(res => {
         this.domains = res.data
       })
