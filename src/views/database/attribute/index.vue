@@ -162,7 +162,10 @@ export default {
       },
       pageable: {
         page: 0,
-        size: 10
+        size: 10,
+        orders: {
+          order: true
+        }
       },
       totalElements: 0,
       totalPages: 0,
@@ -229,7 +232,7 @@ export default {
       this.query()
     },
     handleTreeNodeClick(data, node) {
-      if (node.isLeaf) {
+      if (node.isLeaf && node.parent.parent != null) {
         this.probe.libraryId = node.key
         this.query()
       }
@@ -247,6 +250,9 @@ export default {
       this.attribute.attributeName = row.attributeName
       this.attribute.valueType = row.valueType
       this.attribute.valueList = row.valueList
+      if (this.attribute.valueList == null) {
+        this.attribute.valueList = []
+      }
       this.attribute.displayed = row.displayed
       this.attribute.order = row.order
       this.attribute.libraryId = this.probe.libraryId

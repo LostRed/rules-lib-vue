@@ -46,6 +46,9 @@
       </div>
       <div style="margin-bottom: 20px">
         <el-table :data="list" size="small" stripe fit highlight-current-row height="100%">
+          <template slot="empty">
+            <el-empty description="暂无数据"/>
+          </template>
           <el-table-column prop="ruleCode" label="规则编号" width="150"/>
           <el-table-column prop="businessType" label="业务类型" width="100" :formatter="formatBusinessType"/>
           <el-table-column prop="grade" label="严重等级" width="100" :formatter="formatGrade"/>
