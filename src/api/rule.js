@@ -1,5 +1,15 @@
 import { api } from '@/utils/request'
 
+export function existsRule(ruleCode) {
+  return api({
+    url: '/rule/exists',
+    method: 'post',
+    data: {
+      probe: ruleCode
+    }
+  })
+}
+
 export function queryRule(queryParam) {
   return api({
     url: '/rule/query',

@@ -5,13 +5,12 @@
         <div>
           <el-form ref="queryForm" size="small" :inline="true" :model="probe">
             <el-form-item label="片段类型" prop="segmentType">
-              <el-select v-model="probe.segmentType" placeholder="请选择业务类型">
+              <el-select v-model="probe.segmentType" placeholder="请选择业务类型" @change="handleSelectChange">
                 <el-option
                   v-for="(segmentType,key) in segmentTypes"
                   :key="key"
                   :label="segmentType"
                   :value="key"
-                  @change="probe.segmentType = key"
                 />
               </el-select>
             </el-form-item>
@@ -167,6 +166,9 @@ export default {
     },
     resetQueryForm(formName) {
       this.$refs[formName].resetFields()
+    },
+    handleSelectChange() {
+      this.pageable.page = 0
     },
     handleCurrentChange(val) {
       this.pageable.page = val - 1

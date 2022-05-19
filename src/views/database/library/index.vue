@@ -5,13 +5,12 @@
         <div>
           <el-form ref="queryForm" size="small" :inline="true" :model="probe">
             <el-form-item label="目录" prop="libraryId">
-              <el-select v-model="probe.catalogId" placeholder="请选择目录">
+              <el-select v-model="probe.catalogId" placeholder="请选择目录" @change="handleSelectChange">
                 <el-option
                   v-for="catalog in catalogs"
                   :key="catalog.id"
                   :label="catalog.catalogName"
                   :value="catalog.id"
-                  @change="probe.catalogId = catalog.id"
                 >
                   <span style="float: left">{{ catalog.catalogName }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ catalog.id }}</span>
@@ -45,10 +44,11 @@
           <el-table-column prop="libraryCode" label="库编号" width="300"/>
           <el-table-column prop="libraryName" label="库名称" width="300"/>
           <el-table-column prop="description" label="库描述" show-overflow-tooltip/>
-          <el-table-column fixed="right" label="操作" width="100">
+          <el-table-column fixed="right" label="操作" width="150">
             <template v-slot="scope">
               <el-button type="text" size="small" @click="handleEnter(scope.row)">进入</el-button>
               <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button type="text" size="small" @click="handleRegister(scope.row)">注册</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -87,7 +87,7 @@
 
 <script>
 import { queryCatalog } from '@/api/catalog'
-import { createLibrary, editLibrary, existsLibrary, queryLibrary } from '@/api/library'
+import { createLibrary, editLibrary, existsLibrary, queryLibrary, registerAndCollectModel } from '@/api/library'
 
 export default {
   name: 'Library',
@@ -97,7 +97,7 @@ export default {
         callback()
         return
       }
-      existsLibrary({ probe: value })
+      existsLibrary(value)
         .then(res => {
           if (res.code === 0 && res.data) {
             callback(new Error('该库编号已存在'))
@@ -184,6 +184,9 @@ export default {
     resetQueryForm(formName) {
       this.$refs[formName].resetFields()
     },
+    handleSelectChange() {
+      this.pageable.page = 0
+    },
     handleCurrentChange(val) {
       this.pageable.page = val - 1
       this.query()
@@ -210,6 +213,12 @@ export default {
       this.library.catalogId = this.probe.catalogId
       this.dialogFormVisible = true
       this.operation = '编辑'
+    },
+    handleRegister(row) {
+      registerAndCollectModel(row.id)
+        .then(() => {
+          this.$message.success('注册成功')
+        })
     },
     handleCreate() {
       if (this.probe.catalogId == null) {

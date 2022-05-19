@@ -4,7 +4,7 @@
       <el-page-header :content="businessTypes[businessType]+'规则'" @back="back"/>
       <div style="margin-top: 20px">
         <el-row :gutter="20">
-          <el-col v-for="item in rules" :key="item.id" :span="6">
+          <el-col v-for="item in rules" :key="item.id" :span="12">
             <div>
               <el-card class="box-card" shadow="hover">
                 <div slot="header" class="title">

@@ -32,11 +32,13 @@ export function queryByCatalog(probe) {
   })
 }
 
-export function existsLibrary(probe) {
+export function existsLibrary(libraryCode) {
   return api({
     url: '/library/exists',
     method: 'post',
-    data: probe
+    data: {
+      probe: libraryCode
+    }
   })
 }
 
@@ -44,5 +46,15 @@ export function queryModelLibrary() {
   return api({
     url: '/modelLibrary/query',
     method: 'get'
+  })
+}
+
+export function registerAndCollectModel(libraryId) {
+  return api({
+    url: '/library/register',
+    method: 'post',
+    data: {
+      probe: libraryId
+    }
   })
 }

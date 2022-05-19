@@ -87,7 +87,7 @@
 <script>
 
 import Expression from '@/views/rule/components/expression'
-import { createRule } from '@/api/rule'
+import { createRule, existsRule } from '@/api/rule'
 import { getAllEngineBusinessType } from '@/api/rulesEngine'
 
 export default {
@@ -96,6 +96,15 @@ export default {
     Expression
   },
   data() {
+    const checkRuleCode = (rule, value, callback) => {
+      existsRule(value)
+        .then(res => {
+          if (res.code === 0 && res.data) {
+            callback(new Error('该规则编号已存在'))
+          }
+          callback()
+        })
+    }
     return {
       expressionType: '',
       drawer: false,
@@ -120,10 +129,8 @@ export default {
       rules: {
         ruleCode: [
           { required: true, message: '请输入规则编号', trigger: 'blur' },
-          { min: 1, max: 50, message: '长度在1到50个字符', trigger: 'blur' }
-        ],
-        businessType: [
-          { required: true, message: '请选择业务类型', trigger: 'blur' }
+          { min: 1, max: 50, message: '长度在1到50个字符', trigger: 'blur' },
+          { validator: checkRuleCode, trigger: 'blur' }
         ],
         description: [
           { required: true, message: '请输入规则描述', trigger: 'blur' }

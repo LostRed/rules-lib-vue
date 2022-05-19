@@ -14,7 +14,6 @@
                   :key="key"
                   :label="businessType"
                   :value="key"
-                  @change="probe.businessType = key"
                 />
               </el-select>
             </el-form-item>
@@ -25,7 +24,6 @@
                   :key="key"
                   :label="grade"
                   :value="key"
-                  @change="probe.grade = key"
                 />
               </el-select>
             </el-form-item>
@@ -50,7 +48,7 @@
             <el-empty description="暂无数据"/>
           </template>
           <el-table-column prop="ruleCode" label="规则编号" width="150"/>
-          <el-table-column prop="businessType" label="业务类型" width="100" :formatter="formatBusinessType"/>
+          <el-table-column prop="businessType" label="业务类型" width="150" :formatter="formatBusinessType"/>
           <el-table-column prop="grade" label="严重等级" width="100" :formatter="formatGrade"/>
           <el-table-column prop="order" label="执行顺序" width="100"/>
           <el-table-column prop="description" label="规则描述" show-overflow-tooltip/>
@@ -147,24 +145,6 @@ export default {
         parameterExp: null,
         conditionExp: null,
         predicateExp: null
-      },
-      rules: {
-        ruleCode: [
-          { required: true, message: '请输入规则编号', trigger: 'blur' },
-          { min: 1, max: 50, message: '长度在1到50个字符', trigger: 'blur' }
-        ],
-        description: [
-          { required: true, message: '请输入规则描述', trigger: 'blur' }
-        ],
-        parameterExp: [
-          { required: true, message: '请输入参数表达式', trigger: 'blur' }
-        ],
-        conditionExp: [
-          { required: true, message: '请输入条件表达式', trigger: 'blur' }
-        ],
-        predicateExp: [
-          { required: true, message: '请输入断定表达式', trigger: 'blur' }
-        ]
       }
     }
   },

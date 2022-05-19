@@ -55,14 +55,22 @@
       </div>
       <el-form size="small" label-width="60px">
         <el-form-item v-if="parameters.length!==0" label="参数">
-          <el-tooltip v-for="item in parameters" :key="item.segment" :content="item.description+' [提示：'+item.tips+']'">
+          <el-tooltip
+            v-for="item in parameters"
+            :key="item.segment"
+            :content="item.tips==null?item.description:item.description+' [提示：'+item.tips+']'"
+          >
             <el-tag size="mini" class="tag" @click="handleClickTag(item.segment)">
               {{ item.segment }}
             </el-tag>
           </el-tooltip>
         </el-form-item>
         <el-form-item v-if="operators.length!==0" label="运算符">
-          <el-tooltip v-for="item in operators" :key="item.segment" :content="item.description+' [提示：'+item.tips+']'">
+          <el-tooltip
+            v-for="item in operators"
+            :key="item.segment"
+            :content="item.tips==null?item.description:item.description+' [提示：'+item.tips+']'"
+          >
             <el-tag size="mini" class="tag" @click="handleClickTag(item.segment)">
               {{ item.segment }}
             </el-tag>
@@ -70,7 +78,11 @@
           </el-tooltip>
         </el-form-item>
         <el-form-item v-if="functions.length!==0" label="函数">
-          <el-tooltip v-for="item in functions" :key="item.segment" :content="item.description+' [提示：'+item.tips+']'">
+          <el-tooltip
+            v-for="item in functions"
+            :key="item.segment"
+            :content="item.tips==null?item.description:item.description+' [提示：'+item.tips+']'"
+          >
             <el-tag size="mini" class="tag" @click="handleClickTag(item.segment)">
               {{ item.segment }}
             </el-tag>
@@ -78,7 +90,11 @@
           </el-tooltip>
         </el-form-item>
         <el-form-item v-if="others.length!==0" label="其它">
-          <el-tooltip v-for="item in others" :key="item.segment" :content="item.description+' [提示：'+item.tips+']'">
+          <el-tooltip
+            v-for="item in others"
+            :key="item.segment"
+            :content="item.tips==null?item.description:item.description+' [提示：'+item.tips+']'"
+          >
             <el-tag size="mini" class="tag" @click="handleClickTag(item.segment)">
               {{ item.segment }}
             </el-tag>
