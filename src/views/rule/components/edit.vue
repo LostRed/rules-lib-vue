@@ -41,7 +41,7 @@
             <el-form-item prop="parameterExp">
               <template slot="label">
                 <span>参数表达式</span>
-                <el-tooltip class="item" effect="dark" content="领域对象内的参数">
+                <el-tooltip class="item" effect="dark" content="获取领域对象内的参数，当满足断定表达式后会记录该参数的值">
                   <i class="el-icon-question"/>
                 </el-tooltip>
               </template>
@@ -51,7 +51,7 @@
             <el-form-item prop="conditionExp">
               <template slot="label">
                 <span>条件表达式</span>
-                <el-tooltip class="item" effect="dark" content="规则是否执行的条件">
+                <el-tooltip class="item" effect="dark" content="满足该表达式时，规则才会执行">
                   <i class="el-icon-question"/>
                 </el-tooltip>
               </template>
@@ -61,7 +61,7 @@
             <el-form-item prop="predicateExp">
               <template slot="label">
                 <span>断定表达式</span>
-                <el-tooltip class="item" effect="dark" content="判断参数是否符合预期">
+                <el-tooltip class="item" effect="dark" content="满足该表达式时，将认为该领域对象是违规的">
                   <i class="el-icon-question"/>
                 </el-tooltip>
               </template>
