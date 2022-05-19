@@ -33,6 +33,7 @@
             <div v-if="active===1" class="step">
               <el-form ref="modelAttrForm" size="small" :model="model" label-width="100px">
                 <el-row>
+                  <el-empty v-if="model.attributes.length===0" description="无自定义属性"/>
                   <el-col v-for="attribute in model.attributes" :key="attribute.id" :span="12">
                     <el-form-item
                       v-if="attribute.valueList==null||attribute.length===0"

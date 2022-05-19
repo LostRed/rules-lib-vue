@@ -67,7 +67,7 @@
             <el-table-column fixed="right" label="操作" width="100">
               <template v-slot="scope">
                 <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
-                <el-button type="text" size="small">删除</el-button>
+                <el-button type="text" size="small" disabled>删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -271,7 +271,15 @@ export default {
         this.$message('请先选择一个库')
         return
       }
-      this.attribute = {}
+      this.attribute = {
+        id: null,
+        attributeName: null,
+        valueType: 'ONE',
+        valueList: null,
+        displayed: true,
+        order: 0,
+        libraryId: null
+      }
       this.attribute.libraryId = this.probe.libraryId
       this.attribute.valueType = 'ONE'
       this.attribute.displayed = true

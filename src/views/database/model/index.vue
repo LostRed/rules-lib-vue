@@ -105,6 +105,7 @@
           </div>
         </div>
         <div v-if="probe.libraryId!=null">
+          <el-empty v-if="list.length===0" description="暂无数据"/>
           <el-row :gutter="20">
             <el-col v-for="item in list" :key="item.id" :span="6">
               <div @click="handleView(item)">
@@ -131,6 +132,18 @@
       </div>
       <el-dialog :title="operation+'模型'" :visible.sync="dialogFormVisible" width="50%">
         <el-form ref="modelAttrForm" size="small" :model="model" label-width="100px">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="模型代码">
+                <el-input v-model="model.code" class="property-input" :disabled="operation==='查看'"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="模型关键词">
+                <el-input v-model="model.keyword" class="property-input" :disabled="operation==='查看'"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-row>
             <el-col v-for="attribute in model.attributes" :key="attribute.id" :span="12">
               <el-form-item v-if="attribute.valueList==null||attribute.length===0" :label="attribute.attributeName">

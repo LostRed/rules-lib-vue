@@ -13,7 +13,7 @@
                   :value="catalog.id"
                 >
                   <span style="float: left">{{ catalog.catalogName }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ catalog.id }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ catalog.description }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -93,7 +93,7 @@ export default {
   name: 'Library',
   data() {
     const checkLibraryCode = (rule, value, callback) => {
-      if (this.operation === '编辑' && value == null) {
+      if (this.operation === '编辑' && value != null) {
         callback()
         return
       }
