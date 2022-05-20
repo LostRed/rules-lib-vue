@@ -46,13 +46,23 @@
             </el-form>
           </div>
           <div style="display: flex">
+            <el-popconfirm title="确定清空吗？" style="margin-right: 10px" @confirm="handleClear()">
+              <el-button
+                slot="reference"
+                :disabled="probe.libraryId==null"
+                type="danger"
+                size="small"
+              >
+                清空
+              </el-button>
+            </el-popconfirm>
             <el-button :disabled="probe.libraryId==null" type="success" size="small" @click="handleCreate()">
               创建
             </el-button>
             <el-upload
               ref="upload"
               action=""
-              accept=".json,.xls,.xlsx"
+              accept=".xls,.xlsx"
               :limit="1"
               :file-list="fileList"
               :on-change="handleImport"
@@ -64,7 +74,6 @@
               <el-button
                 slot="trigger"
                 :disabled="probe.libraryId==null"
-                :loading="loading"
                 size="small"
                 type="primary"
               >导入
@@ -175,7 +184,7 @@
 </template>
 
 <script>
-import { deleteModel, editModel, importModel, info, searchModel } from '@/api/model'
+import { clearModelByLibrary, deleteModel, editModel, importModel, info, searchModel } from '@/api/model'
 import { queryTree, queryByLibrary } from '@/api/attribute'
 
 export default {
@@ -183,7 +192,6 @@ export default {
   data() {
     return {
       fileList: [],
-      loading: false,
       tree: [],
       headers: [],
       defaultProps: {
@@ -266,6 +274,7 @@ export default {
         this.probe.libraryId = node.key
         this.queryHeaders()
         this.list = []
+        this.pageable.page = 0
         this.query()
         this.showFilters = false
       }
@@ -372,16 +381,41 @@ export default {
       }
     },
     handleImport(file) {
-      console.log(file.raw)
-      this.loading = true
+      const loading = this.$loading({
+        lock: true,
+        text: '正在导入模型，请耐心等待...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       const formData = new FormData()
       formData.append('file', file.raw)
       importModel(this.probe.libraryId, formData)
-        .then(() => {
-          this.$message.success('导入成功')
+        .then(res => {
+          this.$message.success('成功导入' + res.data.count + '条数据，耗时' + res.data.time + '秒')
           this.$refs.upload.clearFiles()
           this.query()
-          this.loading = false
+          loading.close()
+        })
+        .catch(() => {
+          this.$refs.upload.clearFiles()
+          loading.close()
+        })
+    },
+    handleClear() {
+      const loading = this.$loading({
+        lock: true,
+        text: '正在清除模型，请耐心等待...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      clearModelByLibrary(this.probe.libraryId)
+        .then(() => {
+          this.$message.success('操作成功')
+          this.query()
+          loading.close()
+        })
+        .catch(() => {
+          loading.close()
         })
     },
     handleCreate() {
@@ -396,6 +430,9 @@ export default {
       deleteModel({ probe: row.id })
         .then(() => {
           this.$message.success('删除成功')
+          if (this.totalElements % this.pageable.size === 1 && this.pageable.page > 0) {
+            this.pageable.page--
+          }
           this.query()
         })
     },

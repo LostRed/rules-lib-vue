@@ -201,6 +201,9 @@ export default {
       destroyRule(row.businessType, row.ruleCode)
         .then(() => {
           this.$message.success('删除成功')
+          if (this.totalElements % this.pageable.size === 1 && this.pageable.page > 0) {
+            this.pageable.page--
+          }
           this.query()
         })
     },

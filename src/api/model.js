@@ -50,6 +50,16 @@ export function existsModel(queryParam) {
   })
 }
 
+export function clearModelByLibrary(libraryId) {
+  return api({
+    url: '/model/clear',
+    method: 'post',
+    data: {
+      probe: libraryId
+    }
+  })
+}
+
 export function deleteModel(queryParam) {
   return api({
     url: '/model/delete',
@@ -62,6 +72,7 @@ export function importModel(libraryId, formData) {
   return api({
     url: `/model/import/${libraryId}`,
     method: 'post',
+    timeout: 3 * 60 * 1000,
     data: formData
   })
 }
