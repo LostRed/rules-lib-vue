@@ -113,7 +113,7 @@
             </el-form>
           </div>
         </div>
-        <div v-if="probe.libraryId!=null">
+        <div v-loading="loading" v-if="probe.libraryId!=null">
           <el-empty v-if="list.length===0" description="暂无数据"/>
           <el-row :gutter="20">
             <el-col v-for="item in list" :key="item.id" :span="6">
@@ -191,6 +191,7 @@ export default {
   name: 'Model',
   data() {
     return {
+      loading: false,
       fileList: [],
       tree: [],
       headers: [],
@@ -212,7 +213,10 @@ export default {
       },
       pageable: {
         page: 0,
-        size: 16
+        size: 16,
+        orders: {
+          code: true
+        }
       },
       totalElements: 0,
       totalPages: 0,
@@ -302,6 +306,7 @@ export default {
       this.query()
     },
     query() {
+      this.loading = true
       const searchParam = {
         probe: this.probe,
         pageable: this.pageable
@@ -313,6 +318,7 @@ export default {
           this.attributeViews = res.data.attributeViews
           this.totalElements = res.data.totalElements
           this.totalPages = res.data.totalPages
+          this.loading = false
         })
     },
     submitQueryForm() {

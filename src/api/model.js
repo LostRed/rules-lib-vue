@@ -54,6 +54,7 @@ export function clearModelByLibrary(libraryId) {
   return api({
     url: '/model/clear',
     method: 'post',
+    timeout: 3 * 60 * 1000,
     data: {
       probe: libraryId
     }
