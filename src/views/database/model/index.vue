@@ -113,7 +113,7 @@
             </el-form>
           </div>
         </div>
-        <div v-loading="loading" v-if="probe.libraryId!=null">
+        <div v-if="probe.libraryId!=null" v-loading="loading">
           <el-empty v-if="list.length===0" description="暂无数据"/>
           <el-row :gutter="20">
             <el-col v-for="item in list" :key="item.id" :span="6">
@@ -318,6 +318,9 @@ export default {
           this.attributeViews = res.data.attributeViews
           this.totalElements = res.data.totalElements
           this.totalPages = res.data.totalPages
+          this.loading = false
+        })
+        .catch(() => {
           this.loading = false
         })
     },

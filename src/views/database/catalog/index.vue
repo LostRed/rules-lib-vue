@@ -23,7 +23,7 @@
         </div>
       </div>
       <div style="margin-bottom: 20px">
-        <el-table :data="list" size="small" stripe fit highlight-current-row height="100%">
+        <el-table v-loading="loading" :data="list" size="small" stripe fit highlight-current-row height="100%">
           <template slot="empty">
             <el-empty description="暂无数据"/>
           </template>
@@ -74,6 +74,7 @@ export default {
   name: 'Catalog',
   data() {
     return {
+      loading: false,
       list: [],
       probe: {
         id: null,
@@ -112,6 +113,7 @@ export default {
       return index + 1
     },
     query() {
+      this.loading = true
       const queryParam = {
         probe: this.probe,
         pageable: this.pageable
@@ -121,6 +123,10 @@ export default {
           this.list = res.data.content
           this.totalElements = res.data.totalElements
           this.totalPages = res.data.totalPages
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
         })
     },
     submitQueryForm() {

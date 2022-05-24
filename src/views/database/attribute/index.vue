@@ -45,7 +45,7 @@
           </div>
         </div>
         <div style="margin-bottom: 20px">
-          <el-table :data="list" size="small" stripe fit highlight-current-row height="100%">
+          <el-table v-loading="loading" :data="list" size="small" stripe fit highlight-current-row height="100%">
             <template slot="empty">
               <el-empty description="暂无数据"/>
             </template>
@@ -142,6 +142,7 @@ export default {
   name: 'Attribute',
   data() {
     return {
+      loading: false,
       tree: [],
       defaultProps: {
         label: 'label',
@@ -206,6 +207,7 @@ export default {
       return null
     },
     query() {
+      this.loading = true
       this.valueType === 'all' ? this.probe.valueType = null : this.probe.valueType = this.valueType
       this.displayed === 'all' ? this.probe.displayed = null : this.probe.displayed = this.displayed
       const queryParam = {
@@ -217,6 +219,10 @@ export default {
           this.list = res.data.content
           this.totalElements = res.data.totalElements
           this.totalPages = res.data.totalPages
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
         })
     },
     resetQueryForm(formName) {
