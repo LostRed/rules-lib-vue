@@ -44,11 +44,10 @@
           <el-table-column prop="libraryCode" label="库编号" width="300"/>
           <el-table-column prop="libraryName" label="库名称" width="300"/>
           <el-table-column prop="description" label="库描述" show-overflow-tooltip/>
-          <el-table-column fixed="right" label="操作" width="150">
+          <el-table-column fixed="right" label="操作" width="100">
             <template v-slot="scope">
               <el-button type="text" size="small" @click="handleEnter(scope.row)">进入</el-button>
               <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button type="text" size="small" @click="handleRegister(scope.row)">注册</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -87,7 +86,7 @@
 
 <script>
 import { queryCatalog } from '@/api/catalog'
-import { createLibrary, editLibrary, existsLibrary, queryLibrary, registerAndCollectModel } from '@/api/library'
+import { createLibrary, editLibrary, existsLibrary, queryLibrary } from '@/api/library'
 
 export default {
   name: 'Library',
@@ -219,12 +218,6 @@ export default {
       this.library.catalogId = this.probe.catalogId
       this.dialogFormVisible = true
       this.operation = '编辑'
-    },
-    handleRegister(row) {
-      registerAndCollectModel(row.id)
-        .then(() => {
-          this.$message.success('注册成功')
-        })
     },
     handleCreate() {
       if (this.probe.catalogId == null) {

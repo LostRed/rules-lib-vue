@@ -48,13 +48,3 @@ export function queryModelLibrary() {
     method: 'get'
   })
 }
-
-export function registerAndCollectModel(libraryId) {
-  return api({
-    url: '/library/register',
-    method: 'post',
-    data: {
-      probe: libraryId
-    }
-  })
-}
