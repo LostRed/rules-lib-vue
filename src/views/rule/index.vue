@@ -118,14 +118,13 @@ export default {
   name: 'Rule',
   data() {
     return {
-      grades: {
-        ILLEGAL: '违规',
-        SUSPECTED: '可疑'
-      },
+      grades: {},
       businessTypes: {},
       list: [],
       probe: {
-        ruleCode: null
+        ruleCode: null,
+        businessType: null,
+        grade: null
       },
       pageable: {
         page: 0,
@@ -152,6 +151,10 @@ export default {
     queryEnum({ probe: 'businessType' })
       .then(res => {
         this.businessTypes = res.data
+      })
+    queryEnum({ probe: 'ruleGrade' })
+      .then(res => {
+        this.grades = res.data
       })
     this.query()
   },
