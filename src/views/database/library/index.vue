@@ -48,13 +48,7 @@
             <template v-slot="scope">
               <el-button type="text" size="small" @click="handleEnter(scope.row)">进入</el-button>
               <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button
-                type="text"
-                size="small"
-                :disabled="modelLibraries.includes(scope.row.libraryCode)"
-                @click="handleRegister(scope.row)"
-              >注册
-              </el-button>
+              <el-button type="text" size="small" @click="handleRegister(scope.row)">注册</el-button>
             </template>
           </el-table-column>
         </el-table>
