@@ -7,10 +7,12 @@ import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 
 import '@/styles/index.scss' // global css
+import 'bin-code-editor/lib/styles/index.css'
 
 import App from './App'
 import store from './store'
 import router from './router'
+import CodeEditor from 'bin-code-editor'
 
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -32,7 +34,7 @@ if (process.env.NODE_ENV === 'production') {
 Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
-
+Vue.use(CodeEditor)
 Vue.config.productionTip = false
 
 new Vue({
