@@ -49,7 +49,7 @@ export function switchDisplayed(queryParam) {
 
 export function downloadTemplate(libraryId) {
   const iframe = document.createElement('iframe')
-  iframe.src = `/api/attribute/template/${libraryId}`
+  iframe.src = `/rules-lib/attribute/template/${libraryId}`
   iframe.style.display = 'none'
   iframe.id = 'download'
   const download = document.getElementById('download')
