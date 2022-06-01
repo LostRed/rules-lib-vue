@@ -42,6 +42,16 @@ export function existsLibrary(libraryCode) {
   })
 }
 
+export function registerLibrary(id) {
+  return api({
+    url: '/library/register',
+    method: 'post',
+    data: {
+      probe: id
+    }
+  })
+}
+
 export function queryModelLibrary() {
   return api({
     url: '/modelLibrary/query',
