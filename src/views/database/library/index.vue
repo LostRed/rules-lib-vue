@@ -12,8 +12,7 @@
                   :label="catalog.catalogName"
                   :value="catalog.id"
                 >
-                  <span style="float: left">{{ catalog.catalogName }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ catalog.description }}</span>
+                  {{ catalog.catalogName }}
                 </el-option>
               </el-select>
             </el-form-item>
@@ -67,6 +66,18 @@
       </div>
       <el-dialog :title="operation + '库'" :visible.sync="dialogFormVisible" width="30%">
         <el-form ref="libraryForm" size="small" :model="library" :rules="rules" label-width="100px">
+          <el-form-item label="目录" prop="catalogId" class="property-input">
+            <el-select v-model="library.catalogId" :disabled="operation !== '编辑'" placeholder="请选择目录">
+              <el-option
+                v-for="catalog in catalogs"
+                :key="catalog.id"
+                :label="catalog.catalogName"
+                :value="catalog.id"
+              >
+                {{ catalog.catalogName }}
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="库编号" prop="libraryCode" class="property-input">
             <el-input v-model="library.libraryCode" :disabled="operation === '编辑'"/>
           </el-form-item>
