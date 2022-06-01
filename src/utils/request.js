@@ -11,7 +11,7 @@ export const service = axios.create({
 })
 
 export const api = axios.create({
-  baseURL: '/api', // api2 的 base_url
+  baseURL: '/rules-lib', // api2 的 base_url
   timeout: 5000 // request timeout
 })
 

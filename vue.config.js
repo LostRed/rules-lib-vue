@@ -37,10 +37,10 @@ module.exports = {
       errors: true
     },
     proxy: {
-      '/api': {
+      '/rules-lib': {
         target: 'http://gateway.docker.internal:8080',
         changeOrigin: true,
-        pathRewrite: { '^/api': '' }
+        pathRewrite: { '^/rules-lib': '' }
       }
     },
     after: require('./mock/mock-server.js')
