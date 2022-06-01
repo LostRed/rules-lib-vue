@@ -27,7 +27,7 @@
           <template slot="empty">
             <el-empty description="暂无数据"/>
           </template>
-          <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
+          <el-table-column type="index" :index="indexMethod" label="#" width="100"/>
           <el-table-column prop="catalogName" label="目录名称" width="300"/>
           <el-table-column prop="description" label="目录描述" show-overflow-tooltip/>
           <el-table-column fixed="right" label="操作" width="100">

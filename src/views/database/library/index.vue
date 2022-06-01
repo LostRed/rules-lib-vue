@@ -39,7 +39,7 @@
           <template slot="empty">
             <el-empty description="暂无数据"/>
           </template>
-          <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
+          <el-table-column type="index" :index="indexMethod" label="#" width="100"/>
           <el-table-column prop="libraryCode" label="库编号" width="300"/>
           <el-table-column prop="libraryName" label="库名称" width="300"/>
           <el-table-column prop="description" label="库描述" show-overflow-tooltip/>

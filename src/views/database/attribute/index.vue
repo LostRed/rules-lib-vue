@@ -49,7 +49,7 @@
             <template slot="empty">
               <el-empty description="暂无数据"/>
             </template>
-            <el-table-column type="index" :index="indexMethod" label="ID" width="100"/>
+            <el-table-column type="index" :index="indexMethod" label="#" width="100"/>
             <el-table-column prop="displayed" label="是否展示" width="100">
               <template v-slot="scope">
                 <el-switch
