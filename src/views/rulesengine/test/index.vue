@@ -10,7 +10,7 @@
             :smart-indent="true"
             theme="idea"
             :indent-unit="2"
-            :line-wrap="true"
+            :line-wrap="false"
             height="90%"
           />
         </el-col>
@@ -32,7 +32,7 @@
             :smart-indent="true"
             theme="idea"
             :indent-unit="2"
-            :line-wrap="true"
+            :line-wrap="false"
             :readonly="true"
             height="90%"
           />
@@ -122,7 +122,7 @@ export default {
 }
 
 .button-panel {
-  margin-top: 50px;
+  height: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
