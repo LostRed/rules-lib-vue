@@ -92,7 +92,6 @@ import {
   editLibrary,
   existsLibrary,
   queryLibrary,
-  queryModelLibrary,
   registerLibrary
 } from '@/api/library'
 
@@ -116,7 +115,6 @@ export default {
       loading: false,
       catalogs: [],
       list: [],
-      modelLibraries: [],
       probe: {
         id: null,
         libraryName: null,
@@ -158,10 +156,6 @@ export default {
     }
   },
   created() {
-    queryModelLibrary()
-      .then(res => {
-        this.modelLibraries = res.data.map(e => e.substring(1))
-      })
     queryCatalog({})
       .then(res => {
         this.catalogs = res.data.content
