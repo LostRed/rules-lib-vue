@@ -52,7 +52,7 @@ export default {
       title: '',
       param: {
         businessType: '',
-        className: '',
+        className: 'com.ylzinfo.brt.lib.param.',
         id: '',
         input: {}
       },
