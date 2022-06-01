@@ -48,7 +48,8 @@
             <template v-slot="scope">
               <el-button type="text" size="small" @click="handleEnter(scope.row)">进入</el-button>
               <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button type="text" size="small" @click="handleRegister(scope.row)">注册</el-button>
+              <el-button type="text" size="small" @click="handleRegister(scope.row)">注册
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -227,9 +228,16 @@ export default {
       this.operation = '编辑'
     },
     handleRegister(row) {
+      const loading = this.$loading({
+        lock: true,
+        text: '正在注册模型，请耐心等待...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       registerLibrary(row.id)
         .then(() => {
           this.$message.success('注册成功')
+          loading.close()
         })
     },
     handleCreate() {
