@@ -109,4 +109,8 @@ export default {
   align-items: center;
   justify-content: space-between;
 }
+
+.box-card {
+  margin-bottom: 20px;
+}
 </style>
