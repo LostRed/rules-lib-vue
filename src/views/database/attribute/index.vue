@@ -3,10 +3,10 @@
     <div class="app-container">
       <div class="left-panel" style="float: left">
         <el-tree
+          ref="tree"
           :data="tree"
           :props="defaultProps"
-          :current-node-key="probe.libraryId"
-          :highlight-current="true"
+          highlight-current
           node-key="id"
           default-expand-all
           @node-click="handleTreeNodeClick"
