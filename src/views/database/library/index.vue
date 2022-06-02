@@ -43,10 +43,11 @@
           <el-table-column prop="libraryCode" label="库编号" width="300"/>
           <el-table-column prop="libraryName" label="库名称" width="300"/>
           <el-table-column prop="description" label="库描述" show-overflow-tooltip/>
-          <el-table-column fixed="right" label="操作" width="120">
+          <el-table-column fixed="right" label="操作" width="180">
             <template v-slot="scope">
-              <el-button type="text" size="small" @click="handleEnter(scope.row)">进入</el-button>
               <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button type="text" size="small" @click="handleAttribute(scope.row)">属性</el-button>
+              <el-button type="text" size="small" @click="handleEnter(scope.row)">模型</el-button>
               <el-button type="text" size="small" @click="handleRegister(scope.row)">注册
               </el-button>
             </template>
@@ -219,16 +220,6 @@ export default {
       this.pageable.size = val
       this.query()
     },
-    handleEnter(row) {
-      this.$message('当前库: ' + row.libraryName)
-      this.$router.push({
-        name: 'Model',
-        params: {
-          catalogId: this.probe.catalogId,
-          libraryId: row.id
-        }
-      })
-    },
     handleEdit(row) {
       this.library.id = row.id
       this.library.libraryCode = row.libraryCode
@@ -237,6 +228,23 @@ export default {
       this.library.catalogId = this.probe.catalogId
       this.dialogFormVisible = true
       this.operation = '编辑'
+    },
+    handleAttribute(row) {
+      this.$router.push({
+        name: 'Attribute',
+        params: {
+          libraryId: row.id
+        }
+      })
+    },
+    handleEnter(row) {
+      this.$router.push({
+        name: 'Model',
+        params: {
+          catalogId: this.probe.catalogId,
+          libraryId: row.id
+        }
+      })
     },
     handleRegister(row) {
       const loading = this.$loading({

@@ -32,8 +32,8 @@
           <el-table-column prop="description" label="目录描述" show-overflow-tooltip/>
           <el-table-column fixed="right" label="操作" width="100">
             <template v-slot="scope">
-              <el-button type="text" size="small" @click="handleEnter(scope.row)">进入</el-button>
               <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button type="text" size="small" @click="handleEnter(scope.row)">查看库</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -143,6 +143,13 @@ export default {
       this.pageable.size = val
       this.query()
     },
+    handleEdit(row) {
+      this.catalog.id = row.id
+      this.catalog.catalogName = row.catalogName
+      this.catalog.description = row.description
+      this.dialogFormVisible = true
+      this.operation = '编辑'
+    },
     handleEnter(row) {
       this.$message('当前目录: ' + row.catalogName)
       this.$router.push({
@@ -151,13 +158,6 @@ export default {
           catalogId: row.id
         }
       })
-    },
-    handleEdit(row) {
-      this.catalog.id = row.id
-      this.catalog.catalogName = row.catalogName
-      this.catalog.description = row.description
-      this.dialogFormVisible = true
-      this.operation = '编辑'
     },
     handleCreate() {
       this.catalog = {}

@@ -253,6 +253,12 @@ export default {
   created() {
     queryTree().then(res => {
       this.tree = res.data
+      this.tree.forEach(e => {
+        e.id = 'catalog-' + e.id
+      })
+      this.$nextTick(() => {
+        this.$refs['tree'].setCurrentKey(this.probe.libraryId)
+      })
     })
     this.probe.libraryId = this.$route.params.libraryId
     if (this.probe.libraryId != null) {
