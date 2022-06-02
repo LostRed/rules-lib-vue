@@ -5,6 +5,8 @@
         <el-tree
           :data="tree"
           :props="defaultProps"
+          :current-node-key="probe.libraryId"
+          :highlight-current="true"
           node-key="id"
           default-expand-all
           @node-click="handleTreeNodeClick"
