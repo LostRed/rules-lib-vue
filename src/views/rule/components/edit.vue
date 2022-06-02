@@ -89,6 +89,7 @@
 import Expression from '@/views/rule/components/expression'
 import { createRule, existsRule } from '@/api/rule'
 import { getAllEngineBusinessType } from '@/api/rulesEngine'
+import { queryEnum } from '@/api/system'
 
 export default {
   name: 'EditRule',
@@ -109,10 +110,7 @@ export default {
       expressionType: '',
       drawer: false,
       operation: '',
-      grades: {
-        ILLEGAL: '违规',
-        SUSPECTED: '可疑'
-      },
+      grades: {},
       businessTypes: {},
       ruleInfo: {
         ruleCode: null,
@@ -151,6 +149,10 @@ export default {
     getAllEngineBusinessType()
       .then(res => {
         this.businessTypes = res.data
+      })
+    queryEnum({ probe: 'ruleGrade' })
+      .then(res => {
+        this.grades = res.data
       })
     if (this.$route.params.ruleInfo != null) {
       this.ruleInfo = this.$route.params.ruleInfo
