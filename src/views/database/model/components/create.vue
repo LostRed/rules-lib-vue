@@ -80,10 +80,10 @@
             <div v-if="active===2" class="step">
               <el-form ref="modelForm" size="small" :model="model" label-width="100px">
                 <el-form-item label="模型编号" prop="code">
-                  <el-input v-model="model.code" :disabled="true" class="property-input"/>
+                  <el-input v-model="model.code" disabled class="property-input"/>
                 </el-form-item>
                 <el-form-item label="模型关键词" prop="keyword">
-                  <el-input v-model="model.keyword" :disabled="true" class="property-input"/>
+                  <el-input v-model="model.keyword" disabled class="property-input"/>
                 </el-form-item>
               </el-form>
             </div>

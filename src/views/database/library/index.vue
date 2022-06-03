@@ -180,7 +180,7 @@ export default {
   },
   methods: {
     indexMethod(index) {
-      return index * this.pageable.page + 1
+      return this.pageable.size * this.pageable.page + index + 1
     },
     query() {
       this.loading = true

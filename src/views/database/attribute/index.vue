@@ -69,7 +69,7 @@
             <el-table-column fixed="right" label="操作" width="100">
               <template v-slot="scope">
                 <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
-                <el-button type="text" size="small" disabled>删除</el-button>
+                <el-button type="text" size="small" disabled style="color: #F56C6C">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -94,7 +94,7 @@
           <el-form-item label="值类型" prop="valueType" class="property-input">
             <el-select v-model="attribute.valueType">
               <el-option label="单值" value="ONE"/>
-              <el-option label="多值" value="MANY" :disabled="true"/>
+              <el-option label="多值" value="MANY" disabled/>
             </el-select>
           </el-form-item>
           <el-form-item label="值可选列表" prop="valueList" class="property-input">
@@ -208,7 +208,7 @@ export default {
   },
   methods: {
     indexMethod(index) {
-      return index * this.pageable.page + 1
+      return this.pageable.size * this.pageable.page + index + 1
     },
     formatValueType(row, column, cellValue) {
       return cellValue === 'ONE' ? '单值' : '多值'

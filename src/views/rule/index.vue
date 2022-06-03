@@ -54,7 +54,7 @@
           <el-table-column prop="description" label="规则描述" show-overflow-tooltip/>
           <el-table-column prop="required" label="是否必须启用" width="100">
             <template v-slot="scope">
-              <el-switch v-model="scope.row.required" :disabled="true"/>
+              <el-switch v-model="scope.row.required" disabled/>
             </template>
           </el-table-column>
           <el-table-column prop="enabled" label="是否启用" width="100">
@@ -66,7 +66,7 @@
             <template v-slot="scope">
               <el-button type="text" size="small" @click="handleView(scope.row)">查看</el-button>
               <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(scope.row)">
-                <el-button slot="reference" type="text" size="small">删除</el-button>
+                <el-button slot="reference" type="text" size="small" style="color: #F56C6C">删除</el-button>
               </el-popconfirm>
             </template>
           </el-table-column>

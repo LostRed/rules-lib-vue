@@ -38,7 +38,7 @@
           <el-table-column type="index" :index="indexMethod" label="#" width="50"/>
           <el-table-column prop="nested" label="是否内嵌类型" width="100">
             <template v-slot="scope">
-              <el-switch v-model="scope.row.nested" :disabled="true"/>
+              <el-switch v-model="scope.row.nested" disabled/>
             </template>
           </el-table-column>
           <el-table-column prop="propertyName" label="字段名称" width="200"/>
