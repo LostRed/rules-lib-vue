@@ -48,8 +48,18 @@
             <el-empty description="暂无数据"/>
           </template>
           <el-table-column prop="ruleCode" label="规则编号" width="150"/>
-          <el-table-column prop="businessType" label="业务类型" width="150" :formatter="formatBusinessType"/>
-          <el-table-column prop="grade" label="严重等级" width="100" :formatter="formatGrade"/>
+          <el-table-column prop="businessType" label="业务类型" width="150">
+            <template v-slot="scope">
+              <el-tag size="mini">{{ businessTypes[scope.row.businessType] }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="grade" label="严重等级" width="100">
+            <template v-slot="scope">
+              <el-tag size="mini" :type="scope.row.grade==='ILLEGAL'?'danger':'warning'">
+                {{ grades[scope.row.grade] }}
+              </el-tag>
+            </template>
+          </el-table-column>
           <el-table-column prop="order" label="执行顺序" width="100"/>
           <el-table-column prop="description" label="规则描述" show-overflow-tooltip/>
           <el-table-column prop="required" label="是否必须启用" width="100">
@@ -165,12 +175,6 @@ export default {
     this.query()
   },
   methods: {
-    formatBusinessType(row, column, cellValue) {
-      return this.businessTypes[cellValue]
-    },
-    formatGrade(row, column, cellValue) {
-      return this.grades[cellValue]
-    },
     query() {
       const queryParam = {
         probe: this.probe,
