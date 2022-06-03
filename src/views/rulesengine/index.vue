@@ -5,7 +5,7 @@
       <div style="margin-top: 20px">
         <el-row :gutter="20">
           <draggable v-model="rules" group="people" @end="orderRules()">
-            <el-col v-for="item in rules" :key="item.ruleCode" :span="12">
+            <el-col v-for="item in rules" :key="item.ruleCode" :span="6">
               <div>
                 <el-card class="box-card" shadow="hover">
                   <div slot="header" class="title">
@@ -27,15 +27,6 @@
                       <el-descriptions-item label="执行顺序">{{ item.order }}</el-descriptions-item>
                       <el-descriptions-item label="是否必须启用">
                         <el-switch v-model="item.required" disabled/>
-                      </el-descriptions-item>
-                      <el-descriptions-item label="参数表达式">
-                        <el-tag size="mini" type="info">{{ item.parameterExp }}</el-tag>
-                      </el-descriptions-item>
-                      <el-descriptions-item label="条件表达式">
-                        <el-tag size="mini" type="info">{{ item.conditionExp }}</el-tag>
-                      </el-descriptions-item>
-                      <el-descriptions-item label="断定表达式">
-                        <el-tag size="mini" type="info">{{ item.predicateExp }}</el-tag>
                       </el-descriptions-item>
                     </el-descriptions>
                   </div>
