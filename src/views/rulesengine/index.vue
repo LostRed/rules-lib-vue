@@ -88,6 +88,12 @@ export default {
     },
     orderRules() {
       editRulesOrder(this.businessType, this.rules.map(e => e.ruleCode))
+        .then(() => {
+          queryRuleInfosByBusinessType(this.businessType)
+            .then(res => {
+              this.rules = res.data
+            })
+        })
         .catch(() => {
           queryRuleInfosByBusinessType(this.businessType)
             .then(res => {
