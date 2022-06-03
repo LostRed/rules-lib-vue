@@ -65,7 +65,6 @@
           <el-table-column fixed="right" label="操作" width="100">
             <template v-slot="scope">
               <el-button type="text" size="small" @click="handleView(scope.row)">查看</el-button>
-              <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
               <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(scope.row)">
                 <el-button slot="reference" type="text" size="small" style="color: #F56C6C">删除</el-button>
               </el-popconfirm>
@@ -89,11 +88,11 @@
           <el-descriptions ref="ruleInfoForm" :model="ruleInfo" :column="1">
             <el-descriptions-item label="规则编号">{{ ruleInfo.ruleCode }}</el-descriptions-item>
             <el-descriptions-item label="业务类型">
-              <el-tag size="mini">{{ businessTypes[ruleInfo.businessType] }}</el-tag>
+              <el-tag size="mini">{{ ruleInfo.businessType }}</el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="严重等级">
               <el-tag size="mini" :type="ruleInfo.grade==='ILLEGAL'?'danger':'warning'">
-                {{ grades[ruleInfo.grade] }}
+                {{ ruleInfo.grade }}
               </el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="规则描述">{{ ruleInfo.description }}</el-descriptions-item>
@@ -144,7 +143,7 @@ export default {
         ruleCode: null,
         description: null,
         businessType: null,
-        grade: '违规',
+        grade: null,
         order: 0,
         required: false,
         enabled: false,
@@ -215,19 +214,6 @@ export default {
             this.pageable.page--
           }
           this.query()
-        })
-    },
-    handleEdit(row) {
-      queryRuleByRuleCode({ probe: row.ruleCode })
-        .then(res => {
-          const ruleInfo = res.data
-          this.$router.push({
-            name: 'EditRule',
-            params: {
-              ruleInfo: ruleInfo,
-              operation: '编辑'
-            }
-          })
         })
     },
     handleCreate() {

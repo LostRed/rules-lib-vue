@@ -50,3 +50,14 @@ export function queryRuleInfosByBusinessType(businessType) {
     }
   })
 }
+
+export function editRulesOrder(businessType, ruleCodes) {
+  return api({
+    url: '/rulesEngine/editRulesOrder',
+    method: 'post',
+    data: {
+      businessType: businessType,
+      ruleCodes: ruleCodes
+    }
+  })
+}
