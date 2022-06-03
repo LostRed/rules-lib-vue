@@ -23,11 +23,11 @@
                           {{ grades[item.grade] }}
                         </el-tag>
                       </el-descriptions-item>
-                      <el-descriptions-item label="规则描述">{{ item.description }}</el-descriptions-item>
                       <el-descriptions-item label="执行顺序">{{ item.order }}</el-descriptions-item>
                       <el-descriptions-item label="是否必须启用">
                         <el-switch v-model="item.required" disabled/>
                       </el-descriptions-item>
+                      <el-descriptions-item label="规则描述">{{ item.description }}</el-descriptions-item>
                     </el-descriptions>
                   </div>
                 </el-card>
@@ -123,5 +123,6 @@ export default {
 
 .box-card {
   margin-bottom: 20px;
+  min-height: 320px;
 }
 </style>
