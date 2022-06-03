@@ -120,7 +120,6 @@ export default {
       }
       queryDomain(queryParam)
         .then(res => {
-          console.log(res.data)
           this.domains = res.data
           this.loading = false
         })

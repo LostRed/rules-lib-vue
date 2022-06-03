@@ -208,7 +208,7 @@ export default {
   },
   methods: {
     indexMethod(index) {
-      return index + 1
+      return index * this.pageable.page + 1
     },
     formatValueType(row, column, cellValue) {
       return cellValue === 'ONE' ? '单值' : '多值'

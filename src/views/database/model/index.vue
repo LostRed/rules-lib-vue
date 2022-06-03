@@ -272,9 +272,6 @@ export default {
     handleFilter() {
       this.showFilters = !this.showFilters
     },
-    indexMethod(index) {
-      return index + 1
-    },
     queryHeaders() {
       queryByLibrary({ probe: this.probe.libraryId })
         .then(res => {
