@@ -65,6 +65,7 @@
           <el-table-column fixed="right" label="操作" width="100">
             <template v-slot="scope">
               <el-button type="text" size="small" @click="handleView(scope.row)">查看</el-button>
+              <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
               <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(scope.row)">
                 <el-button slot="reference" type="text" size="small" style="color: #F56C6C">删除</el-button>
               </el-popconfirm>
@@ -87,17 +88,23 @@
         <div style="padding-left: 50px;padding-right: 50px">
           <el-descriptions ref="ruleInfoForm" :model="ruleInfo" :column="1">
             <el-descriptions-item label="规则编号">{{ ruleInfo.ruleCode }}</el-descriptions-item>
-            <el-descriptions-item label="业务类型">{{ ruleInfo.businessType }}</el-descriptions-item>
-            <el-descriptions-item label="严重等级">{{ ruleInfo.grade }}</el-descriptions-item>
+            <el-descriptions-item label="业务类型">
+              <el-tag size="mini">{{ businessTypes[ruleInfo.businessType] }}</el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item label="严重等级">
+              <el-tag size="mini" :type="ruleInfo.grade==='ILLEGAL'?'danger':'warning'">
+                {{ grades[ruleInfo.grade] }}
+              </el-tag>
+            </el-descriptions-item>
             <el-descriptions-item label="规则描述">{{ ruleInfo.description }}</el-descriptions-item>
             <el-descriptions-item label="参数表达式">
-              <el-tag size="small">{{ ruleInfo.parameterExp }}</el-tag>
+              <el-tag size="small" type="info">{{ ruleInfo.parameterExp }}</el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="条件表达式">
-              <el-tag size="small"> {{ ruleInfo.conditionExp }}</el-tag>
+              <el-tag size="small" type="info"> {{ ruleInfo.conditionExp }}</el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="断定表达式">
-              <el-tag size="small"> {{ ruleInfo.predicateExp }}</el-tag>
+              <el-tag size="small" type="info"> {{ ruleInfo.predicateExp }}</el-tag>
             </el-descriptions-item>
           </el-descriptions>
         </div>
