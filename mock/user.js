@@ -1,10 +1,12 @@
-
 const tokens = {
   admin: {
     token: 'admin-token'
   },
   editor: {
     token: 'editor-token'
+  },
+  guest: {
+    token: 'guest-token'
   }
 }
 
@@ -20,6 +22,12 @@ const users = {
     introduction: 'I am an editor',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     name: 'Normal Editor'
+  },
+  'guest-token': {
+    roles: ['guest'],
+    introduction: 'I am an guest',
+    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+    name: 'Normal Guest'
   }
 }
 
