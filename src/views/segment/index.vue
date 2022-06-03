@@ -32,18 +32,20 @@
       <div style="margin-bottom: 20px">
         <el-table :data="list" size="small" stripe fit highlight-current-row height="100%">
           <el-table-column type="index" :index="indexMethod" label="#" width="100"/>
-          <el-table-column prop="segment" label="片段" width="300">
+          <el-table-column prop="segment" label="片段" width="200">
             <template v-slot="scope">
               <el-tag size="mini">{{ scope.row.segment }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="description" label="片段描述" width="100"/>
+          <el-table-column prop="description" label="片段描述" width="200"/>
           <el-table-column prop="segmentType" label="片段类型" width="100" :formatter="formatSegmentType"/>
           <el-table-column prop="tips" label="提示" show-overflow-tooltip/>
           <el-table-column fixed="right" label="操作" width="100">
             <template v-slot="scope">
               <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button type="text" size="small">删除</el-button>
+              <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(scope.row)">
+                <el-button slot="reference" type="text" size="small" @click="deterDialog($event)">删除</el-button>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -93,7 +95,7 @@
 
 <script>
 import { queryEnum } from '@/api/system'
-import { createSegment, editSegment, querySegment } from '@/api/segment'
+import { createSegment, deleteSegment, editSegment, querySegment } from '@/api/segment'
 
 export default {
   name: 'Segment',
@@ -215,6 +217,19 @@ export default {
           this.dialogFormVisible = false
         }
       })
+    },
+    deterDialog(e) {
+      e.stopPropagation()
+    },
+    handleDelete(row) {
+      deleteSegment(row.id)
+        .then(() => {
+          this.$message.success('删除成功')
+          if (this.totalElements % this.pageable.size === 1 && this.pageable.page > 0) {
+            this.pageable.page--
+          }
+          this.query()
+        })
     }
   }
 }

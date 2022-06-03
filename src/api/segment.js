@@ -23,3 +23,13 @@ export function createSegment(segmentInfo) {
     data: segmentInfo
   })
 }
+
+export function deleteSegment(id) {
+  return api({
+    url: '/segment/delete',
+    method: 'post',
+    data: {
+      id: id
+    }
+  })
+}
