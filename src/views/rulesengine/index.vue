@@ -15,15 +15,12 @@
                   </div>
                   <div class="text item">
                     <el-descriptions :column="1">
-                      <el-descriptions-item label="业务类型">
-                        <el-tag size="mini">{{ businessTypes[item.businessType] }}</el-tag>
-                      </el-descriptions-item>
+                      <el-descriptions-item label="执行顺序">{{ item.order }}</el-descriptions-item>
                       <el-descriptions-item label="严重等级">
                         <el-tag size="mini" :type="item.grade==='ILLEGAL'?'danger':'warning'">
                           {{ grades[item.grade] }}
                         </el-tag>
                       </el-descriptions-item>
-                      <el-descriptions-item label="执行顺序">{{ item.order }}</el-descriptions-item>
                       <el-descriptions-item label="是否必须启用">
                         <el-switch v-model="item.required" disabled/>
                       </el-descriptions-item>
@@ -123,6 +120,6 @@ export default {
 
 .box-card {
   margin-bottom: 20px;
-  min-height: 320px;
+  min-height: 280px;
 }
 </style>
