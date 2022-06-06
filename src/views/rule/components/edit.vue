@@ -130,6 +130,9 @@ export default {
           { min: 1, max: 50, message: '长度在1到50个字符', trigger: 'blur' },
           { validator: checkRuleCode, trigger: 'blur' }
         ],
+        businessType: [
+          { required: true, message: '请选择业务类型', trigger: 'blur' }
+        ],
         description: [
           { required: true, message: '请输入规则描述', trigger: 'blur' }
         ],
