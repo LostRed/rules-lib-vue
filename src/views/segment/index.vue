@@ -32,7 +32,7 @@
       <div style="margin-bottom: 20px">
         <el-table :data="list" size="small" stripe fit highlight-current-row height="100%">
           <el-table-column type="index" :index="indexMethod" label="#" width="100"/>
-          <el-table-column prop="segment" label="片段" width="200">
+          <el-table-column prop="segment" label="片段" width="300">
             <template v-slot="scope">
               <el-tag size="mini">{{ scope.row.segment }}</el-tag>
             </template>

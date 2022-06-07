@@ -230,9 +230,6 @@ export default {
     },
     switchEnabled(row) {
       switchRuleEnabled(row.businessType, row.ruleCode)
-        .then(() => {
-          this.$message.success('操作成功')
-        })
         .catch(() => {
           this.query()
         })
