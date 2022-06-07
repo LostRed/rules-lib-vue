@@ -20,7 +20,14 @@
                 </div>
               </div>
               <div class="text item">
-                规则数量: {{ item.ruleCount }}
+                <el-descriptions :column="1">
+                  <el-descriptions-item label="引擎类型">
+                    <el-tag size="mini">
+                      {{ item.engineType }}
+                    </el-tag>
+                  </el-descriptions-item>
+                  <el-descriptions-item label="规则数量">{{ item.ruleCount }}</el-descriptions-item>
+                </el-descriptions>
               </div>
             </el-card>
           </div>

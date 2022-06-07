@@ -121,7 +121,7 @@ export default {
   name: 'CreateModel',
   data() {
     const checkModelCode = (rule, value, callback) => {
-      existsModel({ probe: value })
+      existsModel({ code: value, libraryId: this.model.libraryId })
         .then(res => {
           if (res.code === 0 && res.data) {
             callback(new Error('该模型编号已存在'))
