@@ -342,7 +342,6 @@ export default {
       this.probe.attributes = []
       this.attributeViews = []
       this.showFilters = false
-      this.$refs['tree'].setCurrentKey(null)
       this.pageable.page = 0
       this.pageable.size = 16
       this.totalElements = 0
