@@ -52,7 +52,7 @@ export default {
       title: '',
       param: {
         businessType: '',
-        className: 'com.ylzinfo.brt.lib.param.',
+        className: 'com.ylzinfo.hsa.input.Input4101A',
         id: '',
         input: {}
       },
