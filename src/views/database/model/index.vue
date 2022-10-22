@@ -279,7 +279,7 @@ export default {
         })
     },
     handleTreeNodeClick(data, node) {
-      if (node.isLeaf) {
+      if (node.isLeaf && node.parent.parent != null) {
         this.probe.libraryId = node.key
         this.queryHeaders()
         this.list = []
