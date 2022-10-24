@@ -204,6 +204,7 @@ export default {
         this.$message('请先选择一个目录')
         return
       }
+      this.pageable.page = 1
       this.query()
     },
     resetQueryForm(formName) {

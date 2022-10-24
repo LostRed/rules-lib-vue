@@ -248,6 +248,7 @@ export default {
         this.$message('请先选择一个库')
         return
       }
+      this.pageable.page = 1
       this.query()
     },
     handleTreeNodeClick(data, node) {

@@ -128,7 +128,10 @@
                     <div>
                       <el-button size="small" type="text" @click="handleEdit(item,$event)">编辑</el-button>
                       <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(item)">
-                        <el-button slot="reference" type="text" size="small" style="color: #F56C6C" @click="deterDialog($event)">删除</el-button>
+                        <el-button slot="reference" type="text" size="small" style="color: #F56C6C"
+                                   @click="deterDialog($event)"
+                        >删除
+                        </el-button>
                       </el-popconfirm>
                     </div>
                   </div>
@@ -330,11 +333,12 @@ export default {
         })
     },
     submitQueryForm() {
-      if (this.probe.libraryId != null) {
-        this.query()
-      } else {
+      if (this.probe.libraryId == null) {
         this.$message('请先选择一个库')
+        return
       }
+      this.pageable.page = 1
+      this.query()
     },
     resetQueryForm(formName) {
       this.$refs[formName].resetFields()

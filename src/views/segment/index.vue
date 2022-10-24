@@ -44,7 +44,10 @@
             <template v-slot="scope">
               <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
               <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(scope.row)">
-                <el-button slot="reference" type="text" size="small" style="color: #F56C6C" @click="deterDialog($event)">删除</el-button>
+                <el-button slot="reference" type="text" size="small" style="color: #F56C6C"
+                           @click="deterDialog($event)"
+                >删除
+                </el-button>
               </el-popconfirm>
             </template>
           </el-table-column>
@@ -164,6 +167,7 @@ export default {
         })
     },
     submitQueryForm() {
+      this.pageable.page = 1
       this.query()
     },
     resetQueryForm(formName) {

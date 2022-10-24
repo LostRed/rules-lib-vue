@@ -188,6 +188,7 @@ export default {
         })
     },
     submitQueryForm() {
+      this.pageable.page = 1
       this.query()
     },
     resetQueryForm(formName) {
