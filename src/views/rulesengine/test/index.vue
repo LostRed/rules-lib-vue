@@ -52,7 +52,6 @@ export default {
       title: '',
       param: {
         businessType: '',
-        className: 'com.ylzinfo.hsa.input.Input4101A',
         id: '',
         input: {}
       },
