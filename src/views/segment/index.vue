@@ -37,7 +37,7 @@
               <el-tag size="mini">{{ scope.row.segment }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="description" label="片段描述" width="200"/>
+          <el-table-column prop="description" label="片段描述" width="300"/>
           <el-table-column prop="segmentType" label="片段类型" width="100" :formatter="formatSegmentType"/>
           <el-table-column prop="tips" label="提示" show-overflow-tooltip/>
           <el-table-column fixed="right" label="操作" width="100">
