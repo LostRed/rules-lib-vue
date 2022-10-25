@@ -98,11 +98,11 @@
           <el-descriptions ref="ruleInfoForm" :model="ruleInfo" :column="1">
             <el-descriptions-item label="规则编号">{{ ruleInfo.ruleCode }}</el-descriptions-item>
             <el-descriptions-item label="业务类型">
-              <el-tag size="mini">{{ ruleInfo.businessType }}</el-tag>
+              <el-tag size="mini">{{ businessTypes[ruleInfo.businessType] }}</el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="严重等级">
               <el-tag size="mini" :type="ruleInfo.grade==='ILLEGAL'?'danger':'warning'">
-                {{ ruleInfo.grade }}
+                {{ grades[ruleInfo.grade] }}
               </el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="规则描述">{{ ruleInfo.description }}</el-descriptions-item>
@@ -206,8 +206,6 @@ export default {
       queryRuleByRuleCode({ probe: row.ruleCode })
         .then(res => {
           this.ruleInfo = res.data
-          this.ruleInfo.businessType = this.businessTypes[this.ruleInfo.businessType]
-          this.ruleInfo.grade = this.grades[this.ruleInfo.grade]
           this.dialogFormVisible = true
         })
     },
