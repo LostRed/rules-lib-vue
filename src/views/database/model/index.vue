@@ -149,22 +149,22 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="模型代码">
-                <el-input v-model="model.code" class="property-input" :disabled="operation==='查看'"/>
+                <el-input v-model="model.code" class="property-input" :readonly="operation==='查看'"/>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="模型关键词">
-                <el-input v-model="model.keyword" class="property-input" :disabled="operation==='查看'"/>
+                <el-input v-model="model.keyword" class="property-input" :readonly="operation==='查看'"/>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col v-for="attribute in model.attributes" :key="attribute.id" :span="12">
               <el-form-item v-if="attribute.valueList==null||attribute.length===0" :label="attribute.attributeName">
-                <el-input v-model="attribute.value" class="property-input" :disabled="operation==='查看'"/>
+                <el-input v-model="attribute.value" class="property-input" :readonly="operation==='查看'"/>
               </el-form-item>
               <el-form-item v-if="attribute.valueList!=null&&attribute.length!==0" :label="attribute.attributeName">
-                <el-select v-model="attribute.value" placeholder="请选择值" :disabled="operation==='查看'">
+                <el-select v-model="attribute.value" placeholder="请选择值" :readonly="operation==='查看'">
                   <el-option
                     v-for="value in attribute.valueList"
                     :key="value"

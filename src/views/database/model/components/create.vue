@@ -80,10 +80,10 @@
             <div v-if="active===2" class="step">
               <el-form ref="modelForm" size="small" :model="model" label-width="100px">
                 <el-form-item label="模型编号" prop="code">
-                  <el-input v-model="model.code" disabled class="property-input"/>
+                  <el-input v-model="model.code" readonly class="property-input"/>
                 </el-form-item>
                 <el-form-item label="模型关键词" prop="keyword">
-                  <el-input v-model="model.keyword" disabled class="property-input"/>
+                  <el-input v-model="model.keyword" readonly class="property-input"/>
                 </el-form-item>
               </el-form>
             </div>
@@ -102,8 +102,8 @@
               </el-result>
             </div>
             <div v-if="active!==3" class="button-panel" style="margin-top: 50px">
-              <el-button :disabled="active===0" size="small" @click="prev">上一步</el-button>
-              <el-button :disabled="model.libraryId==null" size="small" @click="next">{{ nextButtonName }}</el-button>
+              <el-button :readonly="active===0" size="small" @click="prev">上一步</el-button>
+              <el-button :readonly="model.libraryId==null" size="small" @click="next">{{ nextButtonName }}</el-button>
             </div>
           </div>
         </el-col>
