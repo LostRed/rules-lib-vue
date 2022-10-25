@@ -126,9 +126,9 @@
 </template>
 
 <script>
-import {destroyRule, queryRule, queryRuleByRuleCode} from '@/api/rule'
-import {switchRuleEnabled} from '@/api/rulesEngine'
-import {queryEnum} from '@/api/system'
+import { destroyRule, queryRule, queryRuleByRuleCode } from '@/api/rule'
+import { switchRuleEnabled } from '@/api/rulesEngine'
+import { queryEnum } from '@/api/system'
 
 export default {
   name: 'Rule',
@@ -164,11 +164,11 @@ export default {
     }
   },
   created() {
-    queryEnum({probe: 'businessType'})
+    queryEnum({ probe: 'businessType' })
       .then(res => {
         this.businessTypes = res.data
       })
-    queryEnum({probe: 'ruleGrade'})
+    queryEnum({ probe: 'ruleGrade' })
       .then(res => {
         this.grades = res.data
       })
@@ -203,7 +203,7 @@ export default {
       this.query()
     },
     handleView(row) {
-      queryRuleByRuleCode({probe: row.ruleCode})
+      queryRuleByRuleCode({ probe: row.ruleCode })
         .then(res => {
           this.ruleInfo = res.data
           this.dialogFormVisible = true
