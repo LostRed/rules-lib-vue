@@ -45,8 +45,8 @@
                   <i class="el-icon-question"/>
                 </el-tooltip>
               </template>
-              <el-button type="text" @click="handleExp('参数表达式')">生成表达式</el-button>
               <el-input v-model="ruleInfo.parameterExp" disabled/>
+              <el-button type="text" @click="handleExp('参数表达式')">生成表达式</el-button>
             </el-form-item>
             <el-form-item prop="conditionExp">
               <template slot="label">
@@ -55,8 +55,8 @@
                   <i class="el-icon-question"/>
                 </el-tooltip>
               </template>
-              <el-button type="text" @click="handleExp('条件表达式')">生成表达式</el-button>
               <el-input v-model="ruleInfo.conditionExp" disabled/>
+              <el-button type="text" @click="handleExp('条件表达式')">生成表达式</el-button>
             </el-form-item>
             <el-form-item prop="predicateExp">
               <template slot="label">
@@ -65,8 +65,8 @@
                   <i class="el-icon-question"/>
                 </el-tooltip>
               </template>
-              <el-button type="text" @click="handleExp('断定表达式')">生成表达式</el-button>
               <el-input v-model="ruleInfo.predicateExp" disabled/>
+              <el-button type="text" @click="handleExp('断定表达式')">生成表达式</el-button>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit('ruleInfoForm')">提交</el-button>
