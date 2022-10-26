@@ -9,23 +9,24 @@
               <div>
                 <el-card class="box-card" shadow="hover">
                   <div slot="header" class="title">
-                    <div>
-                      <span>{{ item.ruleCode }}</span>
-                    </div>
-                  </div>
-                  <div class="text item">
-                    <el-descriptions :column="1">
-                      <el-descriptions-item label="执行顺序">{{ item.order }}</el-descriptions-item>
-                      <el-descriptions-item label="严重等级">
+                    <div style="display: flex;align-items: center">
+                      <div style="padding-top: 2px;padding-right: 2px">
+                        {{ item.ruleCode }}
+                      </div>
+                      <div>
                         <el-tag size="mini" :type="item.grade==='ILLEGAL'?'danger':'warning'">
                           {{ grades[item.grade] }}
                         </el-tag>
-                      </el-descriptions-item>
-                      <el-descriptions-item label="是否必须启用">
-                        <el-switch v-model="item.required" disabled/>
-                      </el-descriptions-item>
-                      <el-descriptions-item label="规则描述">{{ item.description }}</el-descriptions-item>
-                    </el-descriptions>
+                      </div>
+                    </div>
+                    <div>
+                      <span>{{ item.order }}</span>
+                    </div>
+                  </div>
+                  <div class="text item">
+                    <div style="line-height: 24px">
+                      {{ item.description }}
+                    </div>
                   </div>
                 </el-card>
               </div>
@@ -120,6 +121,6 @@ export default {
 
 .box-card {
   margin-bottom: 20px;
-  min-height: 300px;
+  min-height: 180px;
 }
 </style>
