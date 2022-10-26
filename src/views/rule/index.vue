@@ -107,13 +107,13 @@
             </el-descriptions-item>
             <el-descriptions-item label="规则描述">{{ ruleInfo.description }}</el-descriptions-item>
             <el-descriptions-item label="参数表达式">
-              <el-input v-model="ruleInfo.parameterExp" type="textarea" :rows="5" readonly/>
+              <el-input v-model="ruleInfo.parameterExp" type="textarea" :rows="5" resize="none" readonly/>
             </el-descriptions-item>
             <el-descriptions-item label="条件表达式">
-              <el-input v-model="ruleInfo.conditionExp" type="textarea" :rows="5" readonly/>
+              <el-input v-model="ruleInfo.conditionExp" type="textarea" :rows="5" resize="none" readonly/>
             </el-descriptions-item>
             <el-descriptions-item label="断定表达式">
-              <el-input v-model="ruleInfo.predicateExp" type="textarea" :rows="5" :resize=none readonly/>
+              <el-input v-model="ruleInfo.predicateExp" type="textarea" :rows="5" resize="none" readonly/>
             </el-descriptions-item>
           </el-descriptions>
         </div>
