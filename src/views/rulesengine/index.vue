@@ -120,6 +120,6 @@ export default {
 
 .box-card {
   margin-bottom: 20px;
-  min-height: 280px;
+  min-height: 300px;
 }
 </style>
