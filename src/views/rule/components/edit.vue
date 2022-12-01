@@ -61,7 +61,7 @@
             <el-form-item prop="predicateExp">
               <template slot="label">
                 <span>断定表达式</span>
-                <el-tooltip class="item" effect="dark" content="满足该表达式时，将认为该领域对象是违规的">
+                <el-tooltip class="item" effect="dark" content="满足该表达式时，将会记录并返回参数表达式的值">
                   <i class="el-icon-question"/>
                 </el-tooltip>
               </template>
