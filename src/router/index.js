@@ -77,6 +77,11 @@ export const constantRoutes = [
     }]
   },
 
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
+]
+
+export const asyncRoutes = [
   {
     path: '/database',
     component: Layout,
@@ -221,10 +226,7 @@ export const constantRoutes = [
         noCache: true // 不会被 <keep-alive> 缓存
       }
     }]
-  },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ]
 
 const createRouter = () => new Router({
