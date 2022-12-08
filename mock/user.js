@@ -37,20 +37,22 @@ module.exports = [
     url: '/vue-admin-template/user/login',
     type: 'post',
     response: config => {
-      const { username } = config.body
+      const { username, password } = config.body
       const token = tokens[username]
-
-      // mock error
-      if (!token) {
+      if ((username === 'admin' && password === 'admin@ylzinfo.com') ||
+        (username === 'editor' && password === 'editor@ylz') ||
+        (username === 'guest' && password === '123456') &&
+        token) {
         return {
-          code: 60204,
-          message: 'Account and password are incorrect.'
+          code: 20000,
+          data: token
         }
       }
 
+      // mock error
       return {
-        code: 20000,
-        data: token
+        code: 60204,
+        message: '用户名或密码错误'
       }
     }
   },

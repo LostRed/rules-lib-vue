@@ -47,7 +47,7 @@
               </el-form-item>
             </el-form>
           </div>
-          <div style="display: flex">
+          <div v-if="roles.includes('admin')||roles.includes('editor')" style="display: flex">
             <el-popconfirm title="确定清空吗？" style="margin-right: 10px" @confirm="handleClear()">
               <el-button
                 slot="reference"
@@ -126,10 +126,26 @@
                       <span>{{ item.code }}</span>
                     </div>
                     <div>
-                      <el-button size="small" type="text" @click="handleEdit(item,$event)">编辑</el-button>
-                      <el-popconfirm title="确定删除吗？" style="margin-left: 10px" @confirm="handleDelete(item)">
-                        <el-button slot="reference" type="text" size="small" style="color: #F56C6C"
-                                   @click="deterDialog($event)"
+                      <el-button size="small" type="text" @click="handleView(item)">查看</el-button>
+                      <el-button
+                        v-if="roles.includes('admin')||roles.includes('editor')"
+                        size="small"
+                        type="text"
+                        @click="handleEdit(item,$event)"
+                      >编辑
+                      </el-button>
+                      <el-popconfirm
+                        v-if="roles.includes('admin')||roles.includes('editor')"
+                        title="确定删除吗？"
+                        style="margin-left: 10px"
+                        @confirm="handleDelete(item)"
+                      >
+                        <el-button
+                          slot="reference"
+                          type="text"
+                          size="small"
+                          style="color: #F56C6C"
+                          @click="deterDialog($event)"
                         >删除
                         </el-button>
                       </el-popconfirm>
@@ -191,6 +207,7 @@
 <script>
 import { clearModelByLibrary, deleteModel, editModel, importModel, info, searchModel } from '@/api/model'
 import { queryTree, queryByLibrary } from '@/api/attribute'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Model',
@@ -237,6 +254,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['roles']),
     displayedHeaders: function() {
       return this.headers.filter(header => {
         return header.displayed
