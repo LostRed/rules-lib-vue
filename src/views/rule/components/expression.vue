@@ -4,8 +4,8 @@
       <div slot="header" class="clearfix">
         <span>数据模型</span>
       </div>
-      <el-form size="small">
-        <el-form-item label="数据模型" label-width="60px">
+      <el-form size="small" label-width="80px">
+        <el-form-item label="数据模型">
           <el-select v-model="probe.className" placeholder="请选择数据模型">
             <el-option
               v-for="domain in domains"
@@ -21,8 +21,8 @@
       <div slot="header" class="clearfix">
         <span>领域</span>
       </div>
-      <el-form size="small">
-        <el-form-item label="领域" label-width="60px">
+      <el-form size="small" label-width="80px">
+        <el-form-item label="领域">
           <el-select v-model="queryDomain" placeholder="请选择领域" @change="queryProperties">
             <el-option
               v-for="domain in domains"
@@ -51,29 +51,10 @@
     </el-card>
     <el-card class="card">
       <div slot="header" class="clearfix">
-        <span>表达式</span>
-      </div>
-      <el-form ref="expressionForm" size="small" :rules="rules" :model="probe">
-        <el-form-item label="表达式预览" prop="expression">
-          <el-input type="textarea" :rows="5" :value="probe.expression" @input="changValue"/>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            style="float: right"
-            @click="onSubmit('expressionForm')"
-          >
-            生成
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-    <el-card class="card">
-      <div slot="header" class="clearfix">
         <span>库</span>
       </div>
-      <el-form size="small">
-        <el-form-item v-if="libraries.length!==0" label="库" label-width="60px">
+      <el-form size="small" label-width="80px">
+        <el-form-item v-if="libraries.length!==0" label="库">
           <el-tag
             v-for="library in libraries"
             :key="library"
@@ -89,7 +70,7 @@
       <div slot="header" class="clearfix">
         <span>片段</span>
       </div>
-      <el-form size="small" label-width="60px">
+      <el-form size="small" label-width="80px">
         <el-form-item v-if="parameters.length!==0" label="参数">
           <el-tooltip
             v-for="item in parameters"
@@ -136,6 +117,25 @@
             </el-tag>
             {{ item.description }}
           </el-tooltip>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card class="card">
+      <div slot="header" class="clearfix">
+        <span>表达式</span>
+      </div>
+      <el-form ref="expressionForm" size="small" :rules="rules" :model="probe">
+        <el-form-item label="表达式预览" prop="expression">
+          <el-input type="textarea" :rows="5" :value="probe.expression" @input="changValue"/>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            style="float: right"
+            @click="onSubmit('expressionForm')"
+          >
+            生成
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>
