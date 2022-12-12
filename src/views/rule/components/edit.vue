@@ -39,7 +39,7 @@
               <el-switch v-model="ruleInfo.required"/>
             </el-form-item>
             <el-form-item prop="parameterExp">
-              <slot name="label">
+              <template slot="label">
                 <span>参数表达式</span>
                 <el-tooltip
                   class="item"
@@ -48,27 +48,29 @@
                 >
                   <i class="el-icon-question"/>
                 </el-tooltip>
-              </slot>
+              </template>
               <el-input v-model="ruleInfo.parameterExp" readonly/>
               <el-button type="text" @click="handleExp('参数表达式')">生成表达式</el-button>
             </el-form-item>
             <el-form-item prop="conditionExp">
-              <slot name="label">
+              <template slot="label">
                 <span>条件表达式</span>
                 <el-tooltip class="item" effect="dark" content="结果应为布尔值(true或false)，值为true时，规则才会生效">
                   <i class="el-icon-question"/>
                 </el-tooltip>
-              </slot>
+              </template>
               <el-input v-model="ruleInfo.conditionExp" readonly/>
               <el-button type="text" @click="handleExp('条件表达式')">生成表达式</el-button>
             </el-form-item>
             <el-form-item prop="predicateExp">
-              <slot name="label">
+              <template slot="label">
                 <span>断定表达式</span>
-                <el-tooltip class="item" effect="dark" content="结果应为布尔值(true或false)，值为true时，会触发记录执行结果">
+                <el-tooltip class="item" effect="dark"
+                            content="结果应为布尔值(true或false)，值为true时，会触发记录执行结果"
+                >
                   <i class="el-icon-question"/>
                 </el-tooltip>
-              </slot>
+              </template>
               <el-input v-model="ruleInfo.predicateExp" readonly/>
               <el-button type="text" @click="handleExp('断定表达式')">生成表达式</el-button>
             </el-form-item>
