@@ -39,32 +39,36 @@
               <el-switch v-model="ruleInfo.required"/>
             </el-form-item>
             <el-form-item prop="parameterExp">
-              <template slot="label">
+              <slot name="label">
                 <span>参数表达式</span>
-                <el-tooltip class="item" effect="dark" content="获取领域对象内的参数，当满足断定表达式后会记录该参数的值">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="当断定表达式返回值为true时，会将该表达式的值记录在执行结果中"
+                >
                   <i class="el-icon-question"/>
                 </el-tooltip>
-              </template>
+              </slot>
               <el-input v-model="ruleInfo.parameterExp" readonly/>
               <el-button type="text" @click="handleExp('参数表达式')">生成表达式</el-button>
             </el-form-item>
             <el-form-item prop="conditionExp">
-              <template slot="label">
+              <slot name="label">
                 <span>条件表达式</span>
-                <el-tooltip class="item" effect="dark" content="满足该表达式时，规则才会执行">
+                <el-tooltip class="item" effect="dark" content="结果应为布尔值(true或false)，值为true时，规则才会生效">
                   <i class="el-icon-question"/>
                 </el-tooltip>
-              </template>
+              </slot>
               <el-input v-model="ruleInfo.conditionExp" readonly/>
               <el-button type="text" @click="handleExp('条件表达式')">生成表达式</el-button>
             </el-form-item>
             <el-form-item prop="predicateExp">
-              <template slot="label">
+              <slot name="label">
                 <span>断定表达式</span>
-                <el-tooltip class="item" effect="dark" content="满足该表达式时，将会记录并返回参数表达式的值">
+                <el-tooltip class="item" effect="dark" content="结果应为布尔值(true或false)，值为true时，会触发记录执行结果">
                   <i class="el-icon-question"/>
                 </el-tooltip>
-              </template>
+              </slot>
               <el-input v-model="ruleInfo.predicateExp" readonly/>
               <el-button type="text" @click="handleExp('断定表达式')">生成表达式</el-button>
             </el-form-item>

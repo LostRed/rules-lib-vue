@@ -2,11 +2,28 @@
   <div class="app-container">
     <el-card class="card">
       <div slot="header" class="clearfix">
+        <span>数据模型</span>
+      </div>
+      <el-form size="small">
+        <el-form-item label="数据模型" label-width="60px">
+          <el-select v-model="probe.className" placeholder="请选择数据模型">
+            <el-option
+              v-for="domain in domains"
+              :key="domain.className"
+              :label="domain.description"
+              :value="domain.className"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card class="card">
+      <div slot="header" class="clearfix">
         <span>领域</span>
       </div>
       <el-form size="small">
         <el-form-item label="领域" label-width="60px">
-          <el-select v-model="probe.className" placeholder="请选择领域" @change="queryProperties">
+          <el-select v-model="queryDomain" placeholder="请选择领域" @change="queryProperties">
             <el-option
               v-for="domain in domains"
               :key="domain.className"
@@ -29,6 +46,25 @@
               {{ property.propertyName }}
             </el-tag>
           </el-tooltip>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card class="card">
+      <div slot="header" class="clearfix">
+        <span>表达式</span>
+      </div>
+      <el-form ref="expressionForm" size="small" :rules="rules" :model="probe">
+        <el-form-item label="表达式预览" prop="expression">
+          <el-input type="textarea" :rows="5" :value="probe.expression" @input="changValue"/>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            style="float: right"
+            @click="onSubmit('expressionForm')"
+          >
+            生成
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -103,25 +139,6 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="card">
-      <div slot="header" class="clearfix">
-        <span>表达式</span>
-      </div>
-      <el-form ref="expressionForm" size="small" :rules="rules" :model="probe">
-        <el-form-item label="表达式预览" prop="expression">
-          <el-input type="textarea" :rows="5" :value="probe.expression" @input="changValue"/>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            style="float: right"
-            @click="onSubmit('expressionForm')"
-          >
-            生成
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
   </div>
 </template>
 
@@ -142,6 +159,7 @@ export default {
       others: [],
       libraries: [],
       domains: [],
+      queryDomain: null,
       properties: [],
       probe: {
         className: null,
@@ -155,7 +173,7 @@ export default {
     }
   },
   created() {
-    queryDomain({ probe: {}})
+    queryDomain({ probe: {} })
       .then(res => {
         this.domains = res.data
       })
@@ -183,8 +201,7 @@ export default {
   },
   methods: {
     queryProperties(val) {
-      this.probe.className = val
-      queryByClassName(this.probe.className)
+      queryByClassName(val)
         .then(res => {
           this.properties = res.data.domainProperties
         })
