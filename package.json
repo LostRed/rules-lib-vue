@@ -11,7 +11,9 @@
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
     "lint": "eslint --ext .js,.vue src",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
-    "test:ci": "npm run lint && npm run test:unit"
+    "test:ci": "npm run lint && npm run test:unit",
+    "war:prod": "vue-cli-service build && cd dist && jar -cvf rules-lib-vue.war *",
+    "war:stage": "vue-cli-service build --mode staging && cd dist && jar -cvf rules-lib-vue.war *"
   },
   "dependencies": {
     "axios": "0.27.2",
